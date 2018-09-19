@@ -12,7 +12,7 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase;
+namespace Modules\Purchase\Controller;
 
 use Modules\Navigation\Models\Navigation;
 use Modules\Navigation\Views\NavigationView;
@@ -31,57 +31,8 @@ use phpOMS\Views\View;
  * @link       http://website.orange-management.de
  * @since      1.0.0
  */
-final class Controller extends ModuleAbstract implements WebInterface
+class BackendController extends Controller
 {
-
-    /**
-     * Module path.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public const MODULE_PATH = __DIR__;
-
-    /**
-     * Module version.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public const MODULE_VERSION = '1.0.0';
-
-    /**
-     * Module name.
-     *
-     * @var string
-     * @since 1.0.0
-     */
-    public const MODULE_NAME = 'Purchase';
-
-    /**
-     * Module id.
-     *
-     * @var int
-     * @since 1.0.0
-     */
-    public const MODULE_ID = 1002100000;
-
-    /**
-     * Providing.
-     *
-     * @var string[]
-     * @since 1.0.0
-     */
-    protected static $providing = [];
-
-    /**
-     * Dependencies.
-     *
-     * @var string[]
-     * @since 1.0.0
-     */
-    protected static $dependencies = [
-    ];
 
     /**
      * @param RequestAbstract  $request  Request
