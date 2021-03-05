@@ -15,7 +15,7 @@
         "children": [
             {
                 "id": 1002106001,
-                "pid": "/purchase",
+                "pid": "/",
                 "type": 2,
                 "subtype": 1,
                 "name": "Analysis",
