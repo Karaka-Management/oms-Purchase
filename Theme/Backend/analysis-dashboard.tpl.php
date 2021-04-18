@@ -4,7 +4,7 @@
  *
  * PHP Version 8.0
  *
- * @package   Modules\Purchase
+ * @package   Modules\Sales
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
