@@ -39,17 +39,6 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/article/recommend.*$' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderRecommendation',
-            'verb'       => RouteVerb::GET,
-            'permission' => [
-                'module' => BackendController::MODULE_NAME,
-                'type'   => PermissionType::READ,
-                'state'  => PermissionState::ARTICLE,
-            ],
-        ],
-    ],
     '^.*/purchase/article/create.*$' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleCreate',
@@ -64,6 +53,17 @@ return [
     '^.*/purchase/article/profile.*$' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleProfile',
+            'verb'       => RouteVerb::GET,
+            'permission' => [
+                'module' => BackendController::MODULE_NAME,
+                'type'   => PermissionType::READ,
+                'state'  => PermissionState::ARTICLE,
+            ],
+        ],
+    ],
+    '^.*/purchase/order/suggestion.*$' => [
+        [
+            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestion',
             'verb'       => RouteVerb::GET,
             'permission' => [
                 'module' => BackendController::MODULE_NAME,

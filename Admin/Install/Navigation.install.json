@@ -19,7 +19,7 @@
                 "type": 2,
                 "subtype": 1,
                 "name": "OrderSuggestions",
-                "uri": "{/prefix}purchase/analysis?{?}",
+                "uri": "{/prefix}purchase/order/suggestion?{?}",
                 "target": "self",
                 "icon": null,
                 "order": 15,

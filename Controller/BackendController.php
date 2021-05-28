@@ -146,7 +146,7 @@ final class BackendController extends Controller
      * @since 1.0.0
      * @codeCoverageIgnore
      */
-    public function viewPurchaseOrderRecommendation(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
+    public function viewPurchaseOrderSuggestion(RequestAbstract $request, ResponseAbstract $response, $data = null) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Modules/Purchase/Theme/Backend/article-order-recommendation');
