@@ -4,7 +4,7 @@
  *
  * PHP Version 8.0
  *
- * @package   Modules\Purchase\Models\OrderSuggestion
+ * @package   Modules\Purchase\OrderSuggestion
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
@@ -19,7 +19,7 @@ use phpOMS\Stdlib\Base\Enum;
 /**
  * Suggestion type enum.
  *
- * @package Modules\Purchase\Models\OrderSuggestion
+ * @package Modules\Purchase\OrderSuggestion
  * @license OMS License 1.0
  * @link    https://orange-management.org
  * @since   1.0.0
