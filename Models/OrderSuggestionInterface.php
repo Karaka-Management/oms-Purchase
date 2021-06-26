@@ -24,5 +24,4 @@ namespace Modules\Purchase\Models;
  */
 interface OrderSuggestionInterface
 {
-
 }
