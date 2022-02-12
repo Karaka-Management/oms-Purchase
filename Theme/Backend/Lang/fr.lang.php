@@ -51,7 +51,7 @@ return ['Purchase' => [
     'Highest'              => 'Plus haut',
     'Inactive'             => 'Inactif',
     'Interval'             => 'Intervalle',
-    'Invoice'              => 'Facture d\\'achat',
+    'Invoice'              => 'Facture d\'achat',
     'Invoices'             => 'Factures',
     'IsDefault'            => 'Est par défaut?',
     'Language'             => 'Langue',
@@ -96,7 +96,7 @@ return ['Purchase' => [
     'To'                   => 'À',
     'TopArticles'          => 'Top articles',
     'Trend'                => 'Tendance',
-    'Turnover'             => 'Chiffre d\\'affaires',
+    'Turnover'             => 'Chiffre d\'affaires',
     'Type'                 => 'Taper',
     'ZipCode'              => 'Code postal',
 ]];
