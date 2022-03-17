@@ -13,7 +13,7 @@
 declare(strict_types=1);
 
 use Modules\Purchase\Controller\BackendController;
-use Modules\Purchase\Models\PermissionState;
+use Modules\Purchase\Models\PermissionCategory;
 use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
@@ -25,7 +25,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
-                'state'  => PermissionState::INVOICE,
+                'state'  => PermissionCategory::INVOICE,
             ],
         ],
     ],
@@ -36,7 +36,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::INVOICE,
+                'state'  => PermissionCategory::INVOICE,
             ],
         ],
     ],
@@ -47,7 +47,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::ARTICLE,
+                'state'  => PermissionCategory::ARTICLE,
             ],
         ],
     ],
@@ -58,7 +58,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
-                'state'  => PermissionState::ARTICLE,
+                'state'  => PermissionCategory::ARTICLE,
             ],
         ],
     ],
@@ -69,7 +69,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::ARTICLE,
+                'state'  => PermissionCategory::ARTICLE,
             ],
         ],
     ],
@@ -80,7 +80,7 @@ return [
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionState::ARTICLE,
+                'state'  => PermissionCategory::ARTICLE,
             ],
         ],
     ],
