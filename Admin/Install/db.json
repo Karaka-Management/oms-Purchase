@@ -1,0 +1,68 @@
+{
+    "purchase_item": {
+        "name": "purchase_item",
+        "fields": {
+            "purchase_item_id": {
+                "name": "purchase_item_id",
+                "type": "INT",
+                "null": false,
+                "primary": true,
+                "autoincrement": true
+            },
+            "purchase_item_item": {
+                "name": "purchase_item_item",
+                "type": "INT(11)",
+                "null": true,
+                "default": null,
+                "foreignTable": "itemmgmt_item",
+                "foreignKey": "itemmgmt_item_id"
+            },
+            "purchase_item_supplier": {
+                "name": "purchase_item_supplier",
+                "type": "INT(11)",
+                "null": true,
+                "default": null,
+                "foreignTable": "suppliermgmt_supplier",
+                "foreignKey": "suppliermgmt_supplier_id"
+            },
+            "purchase_item_stock": {
+                "description": "@todo: create foreign key if stockmanagement/warehouse exists",
+                "name": "purchase_item_stock",
+                "type": "int(11)",
+                "null": true,
+                "default": null
+            },
+            "purchase_item_limit_order_quantity": {
+                "name": "purchase_item_limit_order_quantity",
+                "type": "INT(11)",
+                "null": false
+            },
+            "purchase_item_minimum_order_quantity": {
+                "description": "Minimum quantity we want to order",
+                "name": "purchase_item_minimum_order_quantity",
+                "type": "INT(11)",
+                "null": false
+            },
+            "purchase_item_maximum_order_quantity": {
+                "name": "purchase_item_maximum_order_quantity",
+                "type": "INT(11)",
+                "null": false
+            },
+            "purchase_item_maximum_stock_quantity": {
+                "name": "purchase_item_maximum_stock_quantity",
+                "type": "INT(11)",
+                "null": false
+            },
+            "purchase_item_limit_order_range": {
+                "name": "purchase_item_limit_order_range",
+                "type": "INT(11)",
+                "null": false
+            },
+            "purchase_item_maximum_stock_range": {
+                "name": "purchase_item_maximum_stock_range",
+                "type": "INT(11)",
+                "null": false
+            }
+        }
+    }
+}
