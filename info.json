@@ -17,7 +17,9 @@
     "description": "Purchase module.",
     "directory": "Purchase",
     "dependencies": {
-        "Admin": "1.0.0"
+        "Admin": "1.0.0",
+        "ItemManagement": "1.0.0",
+        "SupplierManagement": "1.0.0"
     },
     "providing": {
         "Navigation": "*"

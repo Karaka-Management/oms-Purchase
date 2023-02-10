@@ -8,7 +8,7 @@
         "uri": null,
         "target": "self",
         "icon": "fa fa-shopping-cart",
-        "order": 40,
+        "order": 45,
         "from": "Purchase",
         "permission": { "permission": 2, "category": null, "element": null },
         "parent": 0,
