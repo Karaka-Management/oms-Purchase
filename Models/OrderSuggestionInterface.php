@@ -6,7 +6,7 @@
  *
  * @package   Modules\Purchase\Models
  * @copyright Dennis Eichhorn
- * @license   OMS License 1.0
+ * @license   OMS License 2.0
  * @version   1.0.0
  * @link      https://jingga.app
  */
@@ -18,7 +18,7 @@ namespace Modules\Purchase\Models;
  * Order suggestion interface.
  *
  * @package Modules\Purchase\Models
- * @license OMS License 1.0
+ * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
  */
