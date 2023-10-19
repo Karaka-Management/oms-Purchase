@@ -7,7 +7,7 @@
         "name": "Purchase",
         "uri": null,
         "target": "self",
-        "icon": "fa fa-shopping-cart",
+        "icon": "shopping_cart",
         "order": 45,
         "from": "Purchase",
         "permission": { "permission": 2, "category": null, "element": null },
