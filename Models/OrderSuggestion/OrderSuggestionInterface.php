@@ -4,7 +4,7 @@
  *
  * PHP Version 8.1
  *
- * @package   Modules\Purchase\Models
+ * @package   Modules\Purchase\Models\OrderSuggestion
  * @copyright Dennis Eichhorn
  * @license   OMS License 2.0
  * @version   1.0.0
@@ -12,12 +12,12 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase\Models;
+namespace Modules\Purchase\Models\OrderSuggestion;
 
 /**
  * Order suggestion interface.
  *
- * @package Modules\Purchase\Models
+ * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0

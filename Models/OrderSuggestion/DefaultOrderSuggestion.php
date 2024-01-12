@@ -12,14 +12,14 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase\OrderSuggestion;
+namespace Modules\Purchase\Models\OrderSuggestion;
 
-use Modules\Purchase\Models\OrderSuggestionInterface;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionInterface;
 
 /**
  * OMS order suggestion class
  *
- * @package Modules\Purchase\OrderSuggestion
+ * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
@@ -40,7 +40,7 @@ final class DefaultOrderSuggestion implements OrderSuggestionInterface
      * @var int
      * @since 1.0.0
      */
-    public int $historicComparisonDurationType = OrderSuggestionComparisonDurationType::ANNUALY;
+    public int $historicComparisonDurationType = OrderSuggestionComparisonDurationType::ANNUALLY;
 
     /**
      * How many years should used for the analysis.
@@ -69,7 +69,7 @@ final class DefaultOrderSuggestion implements OrderSuggestionInterface
     /**
      * How greedy should the algorithm be?
      *
-     * The number represents how many items in % can be bought in additon to the optimal stock quantity.
+     * The number represents how many items in % can be bought in addition to the optimal stock quantity.
      *
      * Higher means more room for adjustments.
      *
