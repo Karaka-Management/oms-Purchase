@@ -60,13 +60,11 @@ final class CliController extends Controller
                 'maximum_order_interval', 'minimum_order_quantity',
                 'order_suggestion_type', 'order_suggestion_optimization_type',
                 'order_suggestion_history_duration', 'order_suggestion_averaging_method',
-                'order_suggestion_comparison_duration_type'
+                'order_suggestion_comparison_duration_type',
             ], 'IN')
             ->execute();
 
         foreach ($items as $item) {
-
         }
     }
-
 }

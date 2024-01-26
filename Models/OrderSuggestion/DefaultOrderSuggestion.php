@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Modules\Purchase\Models\OrderSuggestion;
 
-use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionInterface;
-
 /**
  * OMS order suggestion class
  *
