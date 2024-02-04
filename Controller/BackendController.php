@@ -153,6 +153,8 @@ final class BackendController extends Controller
         $view->setTemplate('/Modules/Purchase/Theme/Backend/article-order-recommendation');
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1003001001, $request, $response);
 
+        $this->app->moduleManager->get('Purchase', 'Cli')->cliGenerateOrderSuggestion($request, $response);
+
         return $view;
     }
 }
