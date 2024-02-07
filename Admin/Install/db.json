@@ -1,66 +1,97 @@
 {
-    "purchase_item": {
-        "name": "purchase_item",
+    "purchase_order_suggestion": {
+        "name": "purchase_order_suggestion",
         "fields": {
-            "purchase_item_id": {
-                "name": "purchase_item_id",
+            "purchase_order_suggestion_id": {
+                "name": "purchase_order_suggestion_id",
                 "type": "INT",
                 "null": false,
                 "primary": true,
                 "autoincrement": true
             },
-            "purchase_item_item": {
-                "name": "purchase_item_item",
+            "purchase_order_suggestion_status": {
+                "name": "purchase_order_suggestion_status",
+                "type": "TINYINT(1)",
+                "null": false
+            },
+            "purchase_order_suggestion_created_by": {
+                "name": "purchase_order_suggestion_created_by",
                 "type": "INT(11)",
-                "null": true,
-                "default": null,
+                "null": false,
+                "foreignTable": "account",
+                "foreignKey": "account_id"
+            },
+            "purchase_order_suggestion_created_at": {
+                "name": "purchase_order_suggestion_created_at",
+                "type": "DATETIME",
+                "null": false
+            }
+        }
+    },
+    "purchase_order_suggestion_element": {
+        "name": "purchase_order_suggestion_element",
+        "fields": {
+            "purchase_order_suggestion_element_id": {
+                "name": "purchase_order_suggestion_element_id",
+                "type": "INT",
+                "null": false,
+                "primary": true,
+                "autoincrement": true
+            },
+            "purchase_order_suggestion_element_status": {
+                "name": "purchase_order_suggestion_element_status",
+                "type": "TINYINT(1)",
+                "null": false
+            },
+            "purchase_order_suggestion_element_updated_by": {
+                "name": "purchase_order_suggestion_element_updated_by",
+                "type": "INT(11)",
+                "null": false,
+                "foreignTable": "account",
+                "foreignKey": "account_id"
+            },
+            "purchase_order_suggestion_element_updated_at": {
+                "name": "purchase_order_suggestion_element_updated_at",
+                "type": "DATETIME",
+                "null": false
+            },
+            "purchase_order_suggestion_suggestion": {
+                "name": "purchase_order_suggestion_suggestion",
+                "type": "INT(11)",
+                "null": false,
+                "foreignTable": "purchase_order_suggestion",
+                "foreignKey": "purchase_order_suggestion_id"
+            },
+            "purchase_order_suggestion_item": {
+                "name": "purchase_order_suggestion_item",
+                "type": "INT(11)",
+                "null": false,
                 "foreignTable": "itemmgmt_item",
                 "foreignKey": "itemmgmt_item_id"
             },
-            "purchase_item_supplier": {
-                "name": "purchase_item_supplier",
+            "purchase_order_suggestion_bill": {
+                "name": "purchase_order_suggestion_bill",
                 "type": "INT(11)",
                 "null": true,
                 "default": null,
+                "foreignTable": "billing_bill",
+                "foreignKey": "billing_bill_id"
+            },
+            "purchase_order_suggestion_supplier": {
+                "name": "purchase_order_suggestion_supplier",
+                "type": "INT(11)",
+                "null": false,
                 "foreignTable": "suppliermgmt_supplier",
                 "foreignKey": "suppliermgmt_supplier_id"
             },
-            "purchase_item_stock": {
-                "description": "@todo: create foreign key if stockmanagement/warehouse exists",
-                "name": "purchase_item_stock",
-                "type": "int(11)",
-                "null": true,
-                "default": null
-            },
-            "purchase_item_limit_order_quantity": {
-                "name": "purchase_item_limit_order_quantity",
-                "type": "INT(11)",
+            "purchase_order_suggestion_quantity": {
+                "name": "purchase_order_suggestion_quantity",
+                "type": "BIGINT",
                 "null": false
             },
-            "purchase_item_minimum_order_quantity": {
-                "description": "Minimum quantity we want to order",
-                "name": "purchase_item_minimum_order_quantity",
-                "type": "INT(11)",
-                "null": false
-            },
-            "purchase_item_maximum_order_quantity": {
-                "name": "purchase_item_maximum_order_quantity",
-                "type": "INT(11)",
-                "null": false
-            },
-            "purchase_item_maximum_stock_quantity": {
-                "name": "purchase_item_maximum_stock_quantity",
-                "type": "INT(11)",
-                "null": false
-            },
-            "purchase_item_limit_order_range": {
-                "name": "purchase_item_limit_order_range",
-                "type": "INT(11)",
-                "null": false
-            },
-            "purchase_item_maximum_stock_range": {
-                "name": "purchase_item_maximum_stock_range",
-                "type": "INT(11)",
+            "purchase_order_suggestion_costs": {
+                "name": "purchase_order_suggestion_costs",
+                "type": "BIGINT",
                 "null": false
             }
         }

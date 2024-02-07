@@ -14,16 +14,22 @@ declare(strict_types=1);
 
 namespace Modules\Purchase\Controller;
 
+use Modules\Admin\Models\NullAccount;
+use Modules\Billing\Models\Price\PriceType;
 use Modules\Billing\Models\SalesBillMapper;
 use Modules\ItemManagement\Models\Item;
 use Modules\ItemManagement\Models\ItemMapper;
+use Modules\ItemManagement\Models\ItemStatus;
 use Modules\ItemManagement\Models\StockIdentifierType;
 use Modules\Organization\Models\Attribute\UnitAttributeMapper;
-use Modules\SupplierManagement\Models\NullSupplier;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestion;
+use Modules\SupplierManagement\Models\SupplierMapper;
 use phpOMS\Contract\RenderableInterface;
+use phpOMS\Math\Functions\Functions;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
+use phpOMS\Stdlib\Base\FloatInt;
 use phpOMS\Stdlib\Base\SmartDateTime;
 use phpOMS\Views\View;
 
@@ -35,6 +41,9 @@ use phpOMS\Views\View;
  * @link    https://jingga.app
  * @since   1.0.0
  * @codeCoverageIgnore
+ *
+ * @feature Create feature which re-calculates some of the item number (minimum_stock_range, lead_time, ...) based on history numbers
+ *      https://github.com/Karaka-Management/oms-Purchase/issues/3
  */
 final class CliController extends Controller
 {
@@ -66,6 +75,19 @@ final class CliController extends Controller
             return $view;
         }
 
+        $orderSuggestion = $this->createSuggestionFromRequest($request);
+
+        return $view;
+    }
+
+    public function createSuggestionFromRequest(RequestAbstract $request) : array
+    {
+        $showIrrelevant = $request->getDataBool('-irrelevant') ?? false;
+        $now = new \DateTime('now');
+
+        $suggestion = new OrderSuggestion();
+        $suggestion->createdBy = new NullAccount($request->getDataInt('-user') ?? 1);
+
         // @todo define order details per item+stock
 
         // @question Consider to adjust range algorithm from months to weeks
@@ -74,19 +96,32 @@ final class CliController extends Controller
         //      This would allow users to work on it for a longer time
         //      It would also allow for an easier approval process
         $items = ItemMapper::getAll()
+            ->with('container')
+            ->with('l11n')
+            ->with('l11n/type')
             ->with('attributes')
             ->with('attributes/type')
+            ->where('status', ItemStatus::ACTIVE)
             ->where('stockIdentifier', StockIdentifierType::NONE, '!=')
             ->where('attributes/type/name', [
-                'primary_supplier', 'lead_time', 'qc_time',
+                'lead_time', 'admin_time',
                 'maximum_stock_quantity', 'minimum_stock_quantity',
                 'minimum_order_quantity',
                 'minimum_stock_range', 'order_quantity_steps',
                 'order_suggestion_type', 'order_suggestion_optimization_type',
                 'order_suggestion_history_duration', 'order_suggestion_averaging_method',
                 'order_suggestion_comparison_duration_type',
+                'segment', 'section', 'sales_group', 'product_group', 'product_type',
             ], 'IN')
             ->execute();
+
+        // @todo Implement item dependencies (i.e. for production)
+        // @todo Consider production requests
+        //      Exclude items only created through production (finished + semi-finished)
+        //      Calculate raw material requirement based on
+        //          Finished products sales
+        //          Current productions = reserved
+        //          Not based on sales of the raw material itself = 0 (unless it is also directly sold)
 
         $itemIds = \array_map(function (Item $item) {
             return $item->id;
@@ -122,7 +157,7 @@ final class CliController extends Controller
             // If item is new, the history start is shifted
             $tempHistoryStart = ((int) $item->createdAt->format('Y')) >= ((int) $start->format('Y'))
                 && ((int) $item->createdAt->format('m')) >= ((int) $start->format('m'))
-                ? (int) $item->createdAt('m') // @todo Bad if created at end of month (+1 also not possible because of year change)
+                ? (int) $item->createdAt->format('m') // @todo Bad if created at end of month (+1 also not possible because of year change)
                 : $historyStart;
 
             $actualHistoricDuration = \min(
@@ -157,7 +192,7 @@ final class CliController extends Controller
             // get minimum range
             //      Either directly from attribute minimum_stock_range
             //      Or from minimum_stock_quantity
-            // calculate quantity needed incl. lead_time and qc_time for minimum range
+            // calculate quantity needed incl. lead_time and admin_time for minimum range
             // make sure that the quantity is rounded to the next closest quantity step
             // make sure that at least the minimum order quantity is fulfilled
             // make sure that the maximum order quantity is not exceeded
@@ -165,7 +200,7 @@ final class CliController extends Controller
 
             // Calculate current range using historic sales + other current stats
             $totalHistoricSales = \array_sum($salesForecast);
-            $avgMonthlySales = $totalHistoricSales / $actualHistoricDuration;
+            $avgMonthlySales = (int) \round($totalHistoricSales / $actualHistoricDuration);
 
             $totalStockQuantity = 0;
             foreach ($distributions['dists'][$item->id] ?? [] as $dist) {
@@ -175,64 +210,106 @@ final class CliController extends Controller
             $totalReservedQuantity = $distributions['reserved'][$item->id] ?? 0;
             $totalOrderedQuantity = $distributions['ordered'][$item->id] ?? 0;
 
-            $currentRangeStock    = ($totalStockQuantity + $totalOrderedQuantity) / $avgMonthlySales;
-            $currentRangeReserved = ($totalStockQuantity + $totalOrderedQuantity - $totalReservedQuantity) / $avgMonthlySales;
+            $currentRangeStock    = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity) / $avgMonthlySales;
+            $currentRangeReserved = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity - $totalReservedQuantity) / $avgMonthlySales;
+
+            // @todo Sometimes the reserved range is misleading since the company may not be able to deliver that fast anyway
+            //      -> the reserved quantity is always a constant (even if we have stock, we wouldn't ship)
+            //      -> see SD HTS (depending on other shipments -> not delivered even if available)
+            //      -> maybe it's possible to consider the expected delivery time?
 
             // Get minimum range we want
-            $minimumStockRange    = $item->getAttribute('minimum_stock_range')->value->getValue() ?? 0;
+            $wantedStockRange = $item->getAttribute('minimum_stock_range')->value->getValue() ?? 1;
+
             $minimumStockQuantity = $item->getAttribute('minimum_stock_quantity')->value->getValue() ?? 0;
-            $minimumStockRange    = \max($minimumStockQuantity / $avgMonthlySales, $minimumStockRange);
+            $minimumStockQuantity = (int) \round($minimumStockQuantity * 1000);
+            $minimumStockRange = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
+            $minimumStockQuantity = (int) \round($minimumStockRange * $avgMonthlySales);
 
             $minimumOrderQuantity = $item->getAttribute('minimum_order_quantity')->value->getValue() ?? 0;
+            $minimumOrderQuantity = (int) \round($minimumOrderQuantity * 10000);
+
             $orderQuantityStep = $item->getAttribute('order_quantity_steps')->value->getValue() ?? 1;
+            $orderQuantityStep = (int) \round($orderQuantityStep * 10000);
 
             $leadTime = $item->getAttribute('lead_time')->value->getValue() ?? 3; // in days
 
             // @todo Business hours don't have to be 8 hours
-            $qcTime = ($item->getAttribute('qc_time')->value->getValue() ?? 0) / (8 * 60); // from minutes -> days
+            // we assume 10 seconds per item if nothing is defined for (invoice handling, stock handling)
+            $adminTime = ($item->getAttribute('admin_time')->value->getValue() ?? 10) / (8 * 60 * 60); // from minutes -> days
 
             // Overhead time in days by estimating at least 1 week worth of order quantity
-            $estimatedOverheadTime = $leadTime + $qcTime * \max($minimumOrderQuantity, $avgMonthlySales / 4);
+            $estimatedOverheadTime = $leadTime + $adminTime * \max($minimumOrderQuantity, $avgMonthlySales / 4) / 10000;
 
             $orderQuantity = 0;
-            $rangeDiff = $minimumStockRange - ($currentRangeReserved - $estimatedOverheadTime / 30);
-            if ($rangeDiff > 0) {
-                $orderQuantity = $rangeDiff * $avgMonthlySales;
-                $orderQuantity = \max($minimumOrderQuantity, $orderQuantity);
+            $orderRange = 0;
 
-                if ($orderQuantity !== $minimumOrderQuantity
-                    && ($orderQuantity - $minimumOrderQuantity) % $orderQuantityStep !== 0
-                ) {
-                    $orderQuantity = ($orderQuantity - $minimumOrderQuantity) % $orderQuantityStep;
+            if ($minimumStockRange - ($currentRangeReserved - $estimatedOverheadTime / 30) > 0) {
+                // Iteratively approaching overhead time
+                for ($i = 0; $i < 3; ++$i) {
+                    $orderRange = $minimumStockRange + $wantedStockRange - ($currentRangeReserved - $estimatedOverheadTime / 30);
+
+                    // @todo Instead of using $orderRange * $avgMonthlySales use the actual forecast sales from above.
+                    //      Of course based on the $orderRange = array sum for the orderRange
+                    //      Starting at what index? Now? or do we need to shift by reserved?
+                    $orderQuantity = $orderRange * $avgMonthlySales;
+                    $orderQuantity = \max($minimumOrderQuantity, $orderQuantity);
+
+                    if ($orderQuantity !== $minimumOrderQuantity
+                        && \abs($mod = Functions::modFloat($orderQuantity - $minimumOrderQuantity, $orderQuantityStep)) >= 0.01
+                    ) {
+                        // The if in the brackets rounds the orderQuantity up or down based on closest proximity
+                        $orderQuantity = $orderQuantity - $mod + ($orderQuantityStep - $mod < $mod ? $orderQuantityStep : 0) + $minimumOrderQuantity;
+                    }
+
+                    $estimatedOverheadTime = $leadTime + $adminTime * $orderQuantity / 10000;
                 }
             }
 
-            $orderRange = $orderQuantity / $avgMonthlySales;
+            $orderQuantity = (int) \round($orderQuantity);
 
-            $supplier = new NullSupplier($item->getAttribute('primary_supplier')->value->getValue());
+            $isNew = $now->getTimestamp() - $item->createdAt->getTimestamp() < 60 * 60 * 24 * 60;
+
+            if (!$showIrrelevant
+                && $orderQuantity === 0
+                && !$isNew
+                && ($currentRangeReserved > 1.0 || $avgMonthlySales === 0)
+                && $minimumOrderQuantity * 1.2 <= $currentRangeReserved * $avgMonthlySales
+            ) {
+                continue;
+            }
 
             $internalRequest = new HttpRequest();
-            $internalRequest->setData('price_item', $item->id);
+            $internalRequest->setData('price_quantity', $orderQuantity);
+            $internalRequest->setData('price_type', PriceType::PURCHASE);
 
-            $price = $this->app->moduleManager->get('Billing', 'ApiPrice')->findBestPrice(
-                $internalRequest,
-                null,
-                null,
-                $supplier
-            );
+            $price = $this->app->moduleManager->get('Billing', 'ApiPrice')->findBestPrice($internalRequest, $item);
+
+            $supplier = SupplierMapper::get()
+                ->with('account')
+                ->where('id', (int) $price['supplier'])
+                ->execute();
 
             // @question Consider to add gross price
             $suggestions[$item->id] = [
-                'supplier' => $supplier->id,
-                'quantity' => $orderQuantity,
+                'item' => $item,
+                'supplier' => $supplier,
+                'quantity' => new FloatInt($orderQuantity),
                 'singlePrice' => $price['bestActualPrice'],
-                'totalPrice' => (int) ($price['bestActualPrice'] * $orderQuantity / 10000),
+                'totalPrice' => new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / 10000)),
+                'stock' => new FloatInt($totalStockQuantity),
+                'reserved' => new FloatInt($totalReservedQuantity),
+                'ordered' => new FloatInt($totalOrderedQuantity),
+                'minquantity' => new FloatInt($minimumOrderQuantity),
+                'minstock' => new FloatInt($minimumStockQuantity),
+                'quantitystep' => new FloatInt($orderQuantityStep),
+                'avgsales' => new FloatInt($avgMonthlySales),
                 'range_stock' => $currentRangeStock, // range only considering stock + ordered
                 'range_reserved' => $currentRangeReserved, // range considering stock - reserved + ordered
                 'range_ordered' => $orderRange, // range ADDED with suggested new order quantity
             ];
         }
 
-        return $view;
+        return $suggestions;
     }
 }

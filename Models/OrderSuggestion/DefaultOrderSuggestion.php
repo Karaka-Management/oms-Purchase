@@ -62,7 +62,7 @@ final class DefaultOrderSuggestion implements OrderSuggestionInterface
      * @var int
      * @since 1.0.0
      */
-    public int $optimizationType = OrderSuggestionOptimizationType::PRICE;
+    public int $optimizationType = OrderSuggestionOptimizationType::AVAILABILITY;
 
     /**
      * How greedy should the algorithm be?
@@ -102,19 +102,4 @@ final class DefaultOrderSuggestion implements OrderSuggestionInterface
      * @since 1.0.0
      */
     public int $maxAvailableBudget = 0;
-
-    /**
-     * item data for algorithm:
-     *         number
-     *         name
-     *         purchase price per volume
-     *         minimum quantity per volume
-     *         delivery time / lead time
-     *         in-house processing time (e.g. qs time, labelling, packaging)
-     *         ordered (order confirmations)
-     *         stock available
-     *         offers
-     *         avg. profit
-     *         demand in period N
-     */
 }

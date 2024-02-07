@@ -19,14 +19,45 @@
                 "type": 2,
                 "subtype": 1,
                 "name": "OrderSuggestions",
-                "uri": "{/base}/purchase/order/suggestion?{?}",
+                "uri": "{/base}/purchase/order/suggestion/list?{?}",
                 "target": "self",
                 "icon": null,
                 "order": 15,
                 "from": "Purchase",
                 "permission": { "permission": 2, "category": null, "element": null },
                 "parent": 1002101001,
-                "children": []
+                "children": [
+                    {
+                        "id": 1002105101,
+                        "pid": "/purchase/order/suggestion",
+                        "type": 3,
+                        "subtype": 1,
+                        "name": "List",
+                        "uri": "{/base}/purchase/order/suggestion/list?{?}",
+                        "target": "self",
+                        "icon": null,
+                        "order": 1,
+                        "from": "Purchase",
+                        "permission": { "permission": 2, "category": null, "element": null },
+                        "parent": 1002105001,
+                        "children": []
+                    },
+                    {
+                        "id": 1002105201,
+                        "pid": "/purchase/order/suggestion",
+                        "type": 3,
+                        "subtype": 1,
+                        "name": "Create",
+                        "uri": "{/base}/purchase/order/suggestion/create?{?}",
+                        "target": "self",
+                        "icon": null,
+                        "order": 5,
+                        "from": "Purchase",
+                        "permission": { "permission": 2, "category": null, "element": null },
+                        "parent": 1002105001,
+                        "children": []
+                    }
+                ]
             },
             {
                 "id": 1002106001,

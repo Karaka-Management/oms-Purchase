@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Modules\Purchase\Models\OrderSuggestion;
 
+use Modules\Admin\Models\Account;
+use Modules\Admin\Models\NullAccount;
+
 /**
  * OrderSuggestion class.
  *
@@ -24,4 +27,19 @@ namespace Modules\Purchase\Models\OrderSuggestion;
  */
 class OrderSuggestion
 {
+    public int $id = 0;
+
+    public int $status = OrderSuggestionStatus::DRAFT;
+
+    public Account $createdBy;
+
+    public \DateTimeImmutable $createdAt;
+
+    public array $elements = [];
+
+    public function __construct()
+    {
+        $this->createdBy = new NullAccount();
+        $this->createdAt = new \DateTimeImmutable('now');
+    }
 }

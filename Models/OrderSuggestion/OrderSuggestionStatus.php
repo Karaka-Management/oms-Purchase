@@ -24,11 +24,11 @@ use phpOMS\Stdlib\Base\Enum;
  * @link    https://jingga.app
  * @since   1.0.0
  */
-abstract class OrderSuggestionOptimizationType extends Enum
+abstract class OrderSuggestionStatus extends Enum
 {
-    public const COST = 1; // Suggestion focuses on creating better prices if volume discounts exist.
+    public const DRAFT = 1;
 
-    public const JUST_IN_TIME = 2; // Suggestion focuses on calculating minimum stock quantities.
+    public const DELETED = 2;
 
-    public const AVAILABILITY = 3; // Suggestion focuses on an availability for X days, days need to be specified in the algorithm.
+    public const ORDERED = 3;
 }

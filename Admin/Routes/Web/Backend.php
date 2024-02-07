@@ -73,14 +73,36 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/order/suggestion(\?.*$|$)' => [
+    '^.*/purchase/order/suggestion/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestion',
             'verb'       => RouteVerb::GET,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
-                'state'  => PermissionCategory::ARTICLE,
+                'state'  => PermissionCategory::ORDER,
+            ],
+        ],
+    ],
+    '^.*/purchase/order/suggestion/create(\?.*$|$)' => [
+        [
+            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionCreate',
+            'verb'       => RouteVerb::GET,
+            'permission' => [
+                'module' => BackendController::NAME,
+                'type'   => PermissionType::CREATE,
+                'state'  => PermissionCategory::ORDER,
+            ],
+        ],
+    ],
+    '^.*/purchase/order/suggestion/list(\?.*$|$)' => [
+        [
+            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionList',
+            'verb'       => RouteVerb::GET,
+            'permission' => [
+                'module' => BackendController::NAME,
+                'type'   => PermissionType::READ,
+                'state'  => PermissionCategory::ORDER,
             ],
         ],
     ],

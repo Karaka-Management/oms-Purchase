@@ -4,7 +4,7 @@
  *
  * PHP Version 8.1
  *
- * @package   Modules\Purchase\Models
+ * @package   Modules\Purchase\Models\OrderSuggestion
  * @copyright Dennis Eichhorn
  * @license   OMS License 2.0
  * @version   1.0.0
@@ -12,23 +12,21 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase\Models;
+namespace Modules\Purchase\Models\OrderSuggestion;
 
 use phpOMS\Stdlib\Base\Enum;
 
 /**
- * Permission category enum.
+ * Suggestion type enum.
  *
- * @package Modules\Purchase\Models
+ * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
  */
-abstract class PermissionCategory extends Enum
+abstract class OrderSuggestionElementStatus extends Enum
 {
-    public const INVOICE = 1;
+    public const MODIFIED = 1;
 
-    public const ARTICLE = 2;
-
-    public const ORDER = 3;
+    public const CALCULATED = 2;
 }
