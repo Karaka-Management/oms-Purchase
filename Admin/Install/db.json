@@ -55,42 +55,42 @@
                 "type": "DATETIME",
                 "null": false
             },
-            "purchase_order_suggestion_suggestion": {
-                "name": "purchase_order_suggestion_suggestion",
+            "purchase_order_suggestion_element_suggestion": {
+                "name": "purchase_order_suggestion_element_suggestion",
                 "type": "INT(11)",
                 "null": false,
                 "foreignTable": "purchase_order_suggestion",
                 "foreignKey": "purchase_order_suggestion_id"
             },
-            "purchase_order_suggestion_item": {
-                "name": "purchase_order_suggestion_item",
+            "purchase_order_suggestion_element_item": {
+                "name": "purchase_order_suggestion_element_item",
                 "type": "INT(11)",
                 "null": false,
                 "foreignTable": "itemmgmt_item",
                 "foreignKey": "itemmgmt_item_id"
             },
-            "purchase_order_suggestion_bill": {
-                "name": "purchase_order_suggestion_bill",
+            "purchase_order_suggestion_element_bill": {
+                "name": "purchase_order_suggestion_element_bill",
                 "type": "INT(11)",
                 "null": true,
                 "default": null,
                 "foreignTable": "billing_bill",
                 "foreignKey": "billing_bill_id"
             },
-            "purchase_order_suggestion_supplier": {
-                "name": "purchase_order_suggestion_supplier",
+            "purchase_order_suggestion_element_supplier": {
+                "name": "purchase_order_suggestion_element_supplier",
                 "type": "INT(11)",
                 "null": false,
                 "foreignTable": "suppliermgmt_supplier",
                 "foreignKey": "suppliermgmt_supplier_id"
             },
-            "purchase_order_suggestion_quantity": {
-                "name": "purchase_order_suggestion_quantity",
+            "purchase_order_suggestion_element_quantity": {
+                "name": "purchase_order_suggestion_element_quantity",
                 "type": "BIGINT",
                 "null": false
             },
-            "purchase_order_suggestion_costs": {
-                "name": "purchase_order_suggestion_costs",
+            "purchase_order_suggestion_element_costs": {
+                "name": "purchase_order_suggestion_element_costs",
                 "type": "BIGINT",
                 "null": false
             }

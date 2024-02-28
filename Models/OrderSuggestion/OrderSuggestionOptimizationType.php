@@ -26,9 +26,12 @@ use phpOMS\Stdlib\Base\Enum;
  */
 abstract class OrderSuggestionOptimizationType extends Enum
 {
-    public const COST = 1; // Suggestion focuses on creating better prices if volume discounts exist.
+    public const ITEM_SPECIFIC = 0; // Suggestion focuses on an availability for X days, days need to be specified in the algorithm.
 
-    public const JUST_IN_TIME = 2; // Suggestion focuses on calculating minimum stock quantities.
+    public const AVAILABILITY = 1; // Suggestion focuses on an availability for X days, days need to be specified in the algorithm.
 
-    public const AVAILABILITY = 3; // Suggestion focuses on an availability for X days, days need to be specified in the algorithm.
+    public const COST = 2; // Suggestion focuses on creating better prices if volume discounts exist.
+
+    public const JUST_IN_TIME = 3; // Suggestion focuses on calculating minimum stock quantities.
+
 }

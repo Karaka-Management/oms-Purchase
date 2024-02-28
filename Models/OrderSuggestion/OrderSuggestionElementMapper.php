@@ -4,7 +4,7 @@
  *
  * PHP Version 8.1
  *
- * @package   Modules\Purchase\Models
+ * @package   Modules\Purchase\Models\OrderSuggestion
  * @copyright Dennis Eichhorn
  * @license   OMS License 2.0
  * @version   1.0.0
@@ -12,7 +12,7 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase\Models;
+namespace Modules\Purchase\Models\OrderSuggestion;
 
 use Modules\Admin\Models\AccountMapper;
 use Modules\Billing\Models\BillMapper;
@@ -23,7 +23,7 @@ use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 /**
  * Client mapper class.
  *
- * @package Modules\Purchase\Models
+ * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
@@ -42,14 +42,14 @@ final class OrderSuggestionElementMapper extends DataMapperFactory
     public const COLUMNS = [
         'purchase_order_suggestion_element_id'         => ['name' => 'purchase_order_suggestion_element_id',         'type' => 'int',      'internal' => 'id'],
         'purchase_order_suggestion_element_status'         => ['name' => 'purchase_order_suggestion_element_status',         'type' => 'int',   'internal' => 'status'],
-        'purchase_order_suggestion_element_modified_by' => ['name' => 'purchase_order_suggestion_element_modified_by', 'type' => 'int',   'internal' => 'modifiedBy'],
-        'purchase_order_suggestion_element_modified_at'     => ['name' => 'purchase_order_suggestion_element_modified_at',     'type' => 'DateTimeImmutable',      'internal' => 'modifiedAt'],
+        'purchase_order_suggestion_element_updated_by' => ['name' => 'purchase_order_suggestion_element_updated_by', 'type' => 'int',   'internal' => 'modifiedBy'],
+        'purchase_order_suggestion_element_updated_at'     => ['name' => 'purchase_order_suggestion_element_updated_at',     'type' => 'DateTimeImmutable',      'internal' => 'modifiedAt'],
         'purchase_order_suggestion_element_suggestion'       => ['name' => 'purchase_order_suggestion_element_suggestion',       'type' => 'int',      'internal' => 'suggestion'],
         'purchase_order_suggestion_element_item'       => ['name' => 'purchase_order_suggestion_element_item',       'type' => 'int',      'internal' => 'item'],
         'purchase_order_suggestion_element_bill'       => ['name' => 'purchase_order_suggestion_element_bill',       'type' => 'int',      'internal' => 'bill'],
         'purchase_order_suggestion_element_supplier'       => ['name' => 'purchase_order_suggestion_element_supplier',       'type' => 'int',      'internal' => 'supplier'],
-        'purchase_order_suggestion_element_quantity'       => ['name' => 'purchase_order_suggestion_element_quantity',       'type' => 'int',      'internal' => 'quantity'],
-        'purchase_order_suggestion_element_costs'       => ['name' => 'purchase_order_suggestion_element_costs',       'type' => 'int',      'internal' => 'costs'],
+        'purchase_order_suggestion_element_quantity'       => ['name' => 'purchase_order_suggestion_element_quantity',       'type' => 'Serializable',      'internal' => 'quantity'],
+        'purchase_order_suggestion_element_costs'       => ['name' => 'purchase_order_suggestion_element_costs',       'type' => 'Serializable',      'internal' => 'costs'],
     ];
 
     /**

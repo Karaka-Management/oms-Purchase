@@ -16,6 +16,7 @@ namespace Modules\Purchase\Models\OrderSuggestion;
 
 use Modules\Admin\Models\Account;
 use Modules\Admin\Models\NullAccount;
+use phpOMS\Stdlib\Base\FloatInt;
 
 /**
  * OrderSuggestion class.
@@ -41,5 +42,15 @@ class OrderSuggestion
     {
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
+    }
+
+    public function getTotalCosts() : FloatInt
+    {
+        $total = new FloatInt();
+        foreach ($this->elements as $element) {
+            $total->add($element->costs);
+        }
+
+        return $total;
     }
 }

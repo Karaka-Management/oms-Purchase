@@ -12,100 +12,57 @@
  */
 declare(strict_types=1);
 
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionStatus;
 use phpOMS\Stdlib\Base\FloatInt;
 use phpOMS\Stdlib\Base\SmartDateTime;
+use phpOMS\Uri\UriFactory;
 
 /**
  * @var \phpOMS\Views\View $this
  */
 echo $this->data['nav']->render();
 ?>
+<?php if ($this->data['suggestion']->status === OrderSuggestionStatus::DRAFT) : ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-xs-12 col-sm-7 col-md-5 col-lg-4">
         <div class="portlet">
             <div class="portlet-body">
-                <div class="form-group">
-                    <label>Supplier</label>
-                    <input type="text">
-                </div>
-
-                <div class="form-group">
-                    <label>Product Group</label>
-                    <input type="text">
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="portlet">
-            <div class="portlet-body">
-                <div class="form-group">
-                    <label>Algorithm</label>
-                    <select>
-                        <option>Availability Optimization
-                        <option>Cost Optimization
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Min. range</label>
-                    <input type="text">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="portlet">
-            <div class="portlet-body">
-                <div class="form-group">
-                    <label class="checkbox" for="iIrrelevantItems">
-                        <input id="iIrrelevantItems" name="hide_irrelevant" type="checkbox" value="1" checked>
-                        <span class="checkmark"></span>
-                        Hide irrelevant
-                    </label>
-                </div>
-            </div>
-            <div class="portlet-foot">
-                <!-- @todo Adjust button visibility -->
-                <!-- Save if not created ?> -->
-                <!-- Order if saved ?> -->
-                <!-- None if already order created -->
-                <input type="submit" value="Save">
-                <input type="submit" value="Order">
+                <input type="hidden" name="id" form="suggestionList" value="<?= $this->data['suggestion']->id; ?>">
+                <input name="save" type="submit" form="suggestionList" value="<?= $this->getHtml('Save', '0', '0'); ?>">
+                <!--<input name="order" type="submit" form="suggestionList" formaction="<?= UriFactory::build('{/api}purchase/order/suggestion/bill'); ?>" formmethod="put" value="<?= $this->getHtml('Order'); ?>">-->
+                <input name="delete" class="cancel" type="submit" form="suggestionList" formmethod="delete" value="<?= $this->getHtml('Delete', '0', '0'); ?>">
             </div>
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col-xs-12">
         <div class="portlet">
-            <div class="portlet-head">Suggestions<i class="g-icon download btn end-xs">download</i></div>
-            <div class="slider">
-            <table id="billList" class="default sticky">
+            <div class="portlet-head"><?= $this->getHtml('Suggestions'); ?><i class="g-icon download btn end-xs">download</i></div>
+            <div class=""><!-- @todo Re-implement slider once we figured out how to combine slider+sticky -->
+            <table id="suggestionList" class="default sticky" data-tag="form"
+                data-uri="<?= UriFactory::build('{/api}purchase/order/suggestion'); ?>" data-method="post"
+                data-redirect="<?= UriFactory::build('{/base}/purchase/order/suggestion/view?id=' . $this->data['suggestion']->id); ?>">
                 <thead>
                 <tr>
-                    <td>Item
+                    <td><?= $this->getHtml('Item'); ?>
                     <td class="wf-100">
-                    <td>Supplier
-                    <td>Stock
-                    <td>Reserved
-                    <td>Ordered
-                    <td>Ø Sales
-                    <td>Range 1
-                    <td>Range 2
-                    <td>Min. stock
-                    <td>Min. order
-                    <td>Steps
-                    <td>Ordering
-                    <td>Adding
-                    <td>New range
-                    <td>Price
-                    <td>Costs
+                    <td><?= $this->getHtml('Supplier'); ?>
+                    <td><?= $this->getHtml('Stock'); ?>
+                    <td><?= $this->getHtml('Reserved'); ?>
+                    <td><?= $this->getHtml('Ordered'); ?>
+                    <td><?= $this->getHtml('AvgConsumption'); ?>
+                    <td><?= $this->getHtml('Range1'); ?>
+                    <td><?= $this->getHtml('Range2'); ?>
+                    <td><?= $this->getHtml('MinStock'); ?>
+                    <td><?= $this->getHtml('MinOrder'); ?>
+                    <td><?= $this->getHtml('Steps'); ?>
+                    <td style="min-width: 75px;"><?= $this->getHtml('Ordering'); ?>
+                    <td><?= $this->getHtml('NewRange'); ?>
+                    <td><?= $this->getHtml('Price'); ?>
+                    <td><?= $this->getHtml('Costs'); ?>
                 <tbody>
                 <?php
                     $now = new SmartDateTime('now');
@@ -118,72 +75,72 @@ echo $this->data['nav']->render();
 
                     $isFirst = true;
 
-                foreach ($this->data['suggestions'] as $item => $suggestion) :
-                    $isNew = $now->getTimestamp() - $suggestion['item']->createdAt->getTimestamp() < 60 * 60 * 24 * 60;
+                foreach ($this->data['suggestion']->elements as $element) :
+                    $isNew = $now->getTimestamp() - $element->item->createdAt->getTimestamp() < 60 * 60 * 24 * 60;
 
-                    // Skip irrelevant items
-                    //      No purchase suggestion
-                    //      Not new (new = item created in the last 60 days)
-                    //      At least 1 month in stock
-                    //      At least 20% above min. stock
-                    if ($suggestion['quantity']->value === 0
-                        && !$isNew
-                        && ($suggestion['range_reserved'] > 1.0 || $suggestion['avgsales']->value === 0)
-                        && $suggestion['minquantity']->value * 1.2 <= $suggestion['range_reserved'] * $suggestion['avgsales']->value
-                    ) {
-                        continue;
-                    }
-
-                    $total->add($suggestion['totalPrice']);
-                    $subtotal->add($suggestion['totalPrice']);
-                    $container = \reset($suggestion['item']->container);
+                    $total->add($element->costs);
+                    $container = \reset($element->item->container);
 
                     $class = '';
-                    if ($suggestion['quantity']->value !== 0) {
-                        $class = ' class="highlight-2"';
+                    if ($element->quantity->value !== 0) {
+                        $class = ' class="hl-2"';
                     }
                 ?>
                 <?php
-                    if (empty($supplier) && $lastSupplier !== $suggestion['supplier']->id && !$isFirst) :
+                    if (empty($supplier) && $lastSupplier !== $element->supplier->id && !$isFirst) :
                         $hasSupplierSwitch = true;
-                        $lastSupplier = $suggestion['supplier']->id;
+                        $lastSupplier = $element->supplier->id;
                 ?>
-                    <tr class="highlight-7">
-                        <td colspan="16"><?= $this->printHtml($suggestion['supplier']->account->name1); ?> <?= $this->printHtml($suggestion['supplier']->account->name2); ?>
-                        <td><?= $total->getAmount(); ?>
+                    <tr class="hl-7">
+                        <td colspan="15"><?= $this->printHtml($element->supplier->account->name1); ?> <?= $this->printHtml($element->supplier->account->name2); ?>
+                        <td><?= $subtotal->getAmount(); ?>
                 <?php
                     $subtotal = new FloatInt();
                     endif;
 
+                    $subtotal->add($element->costs);
                     $isFirst = false;
                 ?>
-                <tr>
-                    <td><?= $this->printHtml($suggestion['item']->number); ?>
-                    <td><?= $this->printHtml($suggestion['item']->getL11n('name1')->content); ?> <?= $this->printHtml($suggestion['item']->getL11n('name1')->content); ?>
-                    <td><?= $this->printHtml($suggestion['supplier']->number); ?>
-                    <td><?= $suggestion['stock']->getAmount($container->quantityDecimals); ?>
-                    <td><?= $suggestion['reserved']->getAmount($container->quantityDecimals); ?>
-                    <td><?= $suggestion['ordered']->getAmount($container->quantityDecimals); ?>
-                    <td><?= $suggestion['avgsales']->getAmount(1); ?>
-                    <td><?= $suggestion['range_stock'] === \PHP_INT_MAX ? '' : \number_format($suggestion['range_stock'], 1); ?>
-                    <td><?= $suggestion['range_reserved'] === \PHP_INT_MAX ? '' : \number_format($suggestion['range_reserved'], 1); ?>
-                    <td><?= $suggestion['minstock']->getAmount($container->quantityDecimals); ?>
-                    <td><?= $suggestion['minquantity']->getAmount($container->quantityDecimals); ?>
-                    <td><?= $suggestion['quantitystep']->getAmount($container->quantityDecimals); ?>
-                    <td<?= $class; ?>><input step="<?= $suggestion['quantitystep']->getAmount($container->quantityDecimals); ?>" type="number" value="<?= $suggestion['quantity']->getFloat($container->quantityDecimals); ?>">
-                    <td><?= \number_format($suggestion['range_ordered'], 1); ?>
-                    <td><?= $suggestion['range_reserved'] === \PHP_INT_MAX ? '' : $now->createModify(0, (int) \ceil($suggestion['range_ordered'] + $suggestion['range_reserved']))->format('Y-m-d') ?>
-                    <td><?= $suggestion['singlePrice']->getAmount(); ?>
-                    <td><?= $suggestion['totalPrice']->getAmount(); ?>
+                <tr data-name="element" data-value="<?= $element->id; ?>">
+                    <td><?= $this->printHtml($element->item->number); ?>
+                    <td><?= $this->printHtml($element->item->getL11n('name1')->content); ?> <?= $this->printHtml($element->item->getL11n('name2')->content); ?>
+                    <td><?= $this->printHtml($element->supplier->number); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['stock']->getAmount($container->quantityDecimals); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['reserved']->getAmount($container->quantityDecimals); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['ordered']->getAmount($container->quantityDecimals); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['avgsales']->getAmount(1); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['range_stock'] === \PHP_INT_MAX ? '' : \number_format($this->data['suggestion_data'][$element->item->id]['range_stock'], 1); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['range_reserved'] === \PHP_INT_MAX ? '' : \number_format($this->data['suggestion_data'][$element->item->id]['range_reserved'], 1); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['minstock']->getAmount($container->quantityDecimals); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['minquantity']->getAmount($container->quantityDecimals); ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['quantitystep']->getAmount($container->quantityDecimals); ?>
+                    <td<?= $class; ?>><input name="quantity"
+                        step="<?= $this->data['suggestion_data'][$element->item->id]['quantitystep']->getAmount($container->quantityDecimals); ?>"
+                        type="number"
+                        value="<?= $element->quantity->getFloat($container->quantityDecimals); ?>">
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['range_reserved'] === \PHP_INT_MAX
+                        ? ''
+                        : $now->createModify(
+                            0,
+                            (int) ($months = ($this->data['suggestion_data'][$element->item->id]['range_ordered']
+                                + $this->data['suggestion_data'][$element->item->id]['range_reserved'])),
+                            (int) (($months - ((int) $months)) * 30))
+                            ->format('Y-m-d')
+                        ?>
+                    <td><?= $this->data['suggestion_data'][$element->item->id]['singlePrice']->getAmount(); ?>
+                    <td><?= $element->costs->getAmount(); ?>
                 <?php endforeach; ?>
-                <?php if ($hasSupplierSwitch) : ?>
-                    <tr class="highlight-7">
-                        <td colspan="16"><?= $this->printHtml($suggestion['supplier']->account->name1); ?> <?= $this->printHtml($suggestion['supplier']->account->name2); ?>
+                <?php if (empty($supplier)) : ?>
+                    <tr class="hl-7">
+                        <td colspan="15"><?= $this->printHtml($element->supplier->account->name1); ?> <?= $this->printHtml($element->supplier->account->name2); ?>
                         <td><?= $subtotal->getAmount(); ?>
-                <?php endif; ?>
+                <?php
+                    $subtotal = new FloatInt();
+                    endif;
+                ?>
                 <tfoot>
-                <tr class="highlight-3">
-                    <td colspan="16">Total
+                <tr class="hl-3">
+                    <td colspan="15"><?= $this->getHtml('Total'); ?>
                     <td><?= $total->getAmount(); ?>
             </table>
             </div>
@@ -193,8 +150,8 @@ echo $this->data['nav']->render();
 
 <div class="row">
     <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-        <div class="portlet highlight-2">
-            <div class="portlet-body">Ordering</div>
+        <div class="portlet hl-2">
+            <div class="portlet-body"><?= $this->getHtml('Ordering'); ?></div>
         </div>
     </div>
 </div>

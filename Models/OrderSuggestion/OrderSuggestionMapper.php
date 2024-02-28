@@ -4,7 +4,7 @@
  *
  * PHP Version 8.1
  *
- * @package   Modules\Purchase\Models
+ * @package   Modules\Purchase\Models\OrderSuggestion
  * @copyright Dennis Eichhorn
  * @license   OMS License 2.0
  * @version   1.0.0
@@ -12,22 +12,15 @@
  */
 declare(strict_types=1);
 
-namespace Modules\Purchase\Models;
+namespace Modules\Purchase\Models\OrderSuggestion;
 
 use Modules\Admin\Models\AccountMapper;
-use Modules\Admin\Models\AddressMapper;
-use Modules\Purchase\Models\Attribute\ClientAttributeMapper;
-use Modules\Editor\Models\EditorDocMapper;
-use Modules\ItemManagement\Models\ItemMapper;
-use Modules\Media\Models\MediaMapper;
-use Modules\Payment\Models\PaymentMapper;
-use Modules\SupplierManagement\Models\SupplierMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 
 /**
  * Client mapper class.
  *
- * @package Modules\Purchase\Models
+ * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
@@ -47,7 +40,7 @@ final class OrderSuggestionMapper extends DataMapperFactory
         'purchase_order_suggestion_id'         => ['name' => 'purchase_order_suggestion_id',         'type' => 'int',      'internal' => 'id'],
         'purchase_order_suggestion_status'         => ['name' => 'purchase_order_suggestion_status',         'type' => 'int',   'internal' => 'status'],
         'purchase_order_suggestion_created_by' => ['name' => 'purchase_order_suggestion_created_by', 'type' => 'int',   'internal' => 'createdBy'],
-        'purchase_order_suggestion_created_at'     => ['name' => 'purchase_order_suggestion_created_at',     'type' => 'DateTimeImmutable',      'internal' => 'modifiedAt'],
+        'purchase_order_suggestion_created_at'     => ['name' => 'purchase_order_suggestion_created_at',     'type' => 'DateTimeImmutable',      'internal' => 'createdAt'],
     ];
 
     /**

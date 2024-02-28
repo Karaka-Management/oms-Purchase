@@ -23,6 +23,9 @@ use Modules\ItemManagement\Models\ItemStatus;
 use Modules\ItemManagement\Models\StockIdentifierType;
 use Modules\Organization\Models\Attribute\UnitAttributeMapper;
 use Modules\Purchase\Models\OrderSuggestion\OrderSuggestion;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionElement;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionElementStatus;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionMapper;
 use Modules\SupplierManagement\Models\SupplierMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\Math\Functions\Functions;
@@ -76,11 +79,12 @@ final class CliController extends Controller
         }
 
         $orderSuggestion = $this->createSuggestionFromRequest($request);
+        $this->createModel($request->header->account, $orderSuggestion, OrderSuggestionMapper::class, 'order_suggestion', $request->getOrigin());
 
         return $view;
     }
 
-    public function createSuggestionFromRequest(RequestAbstract $request) : array
+    public function createSuggestionFromRequest(RequestAbstract $request) : OrderSuggestion
     {
         $showIrrelevant = $request->getDataBool('-irrelevant') ?? false;
         $now = new \DateTime('now');
@@ -115,6 +119,9 @@ final class CliController extends Controller
             ], 'IN')
             ->execute();
 
+        // @todo check for supplier of item if set
+        // @todo check for product type of item if set
+
         // @todo Implement item dependencies (i.e. for production)
         // @todo Consider production requests
         //      Exclude items only created through production (finished + semi-finished)
@@ -148,7 +155,6 @@ final class CliController extends Controller
         $historyStart = (int) $start->format('m');
         $historyEnd = (int) $end->format('m');
 
-        $suggestions = [];
         foreach ($items as $item) {
             $maxHistoryDuration = $item->getAttribute('order_suggestion_history_duration')->value->getValue() ?? 12;
 
@@ -222,24 +228,24 @@ final class CliController extends Controller
             $wantedStockRange = $item->getAttribute('minimum_stock_range')->value->getValue() ?? 1;
 
             $minimumStockQuantity = $item->getAttribute('minimum_stock_quantity')->value->getValue() ?? 0;
-            $minimumStockQuantity = (int) \round($minimumStockQuantity * 1000);
+            $minimumStockQuantity = (int) \round($minimumStockQuantity * FloatInt::DIVISOR);
             $minimumStockRange = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
             $minimumStockQuantity = (int) \round($minimumStockRange * $avgMonthlySales);
 
             $minimumOrderQuantity = $item->getAttribute('minimum_order_quantity')->value->getValue() ?? 0;
-            $minimumOrderQuantity = (int) \round($minimumOrderQuantity * 10000);
+            $minimumOrderQuantity = (int) \round($minimumOrderQuantity * FloatInt::DIVISOR);
 
             $orderQuantityStep = $item->getAttribute('order_quantity_steps')->value->getValue() ?? 1;
-            $orderQuantityStep = (int) \round($orderQuantityStep * 10000);
+            $orderQuantityStep = (int) \round($orderQuantityStep * FloatInt::DIVISOR);
 
             $leadTime = $item->getAttribute('lead_time')->value->getValue() ?? 3; // in days
 
             // @todo Business hours don't have to be 8 hours
             // we assume 10 seconds per item if nothing is defined for (invoice handling, stock handling)
-            $adminTime = ($item->getAttribute('admin_time')->value->getValue() ?? 10) / (8 * 60 * 60); // from minutes -> days
+            $adminTime = ($item->getAttribute('admin_time')->value->getValue() ?? 10) / (8 * 60 * 60); // from seconds -> days
 
             // Overhead time in days by estimating at least 1 week worth of order quantity
-            $estimatedOverheadTime = $leadTime + $adminTime * \max($minimumOrderQuantity, $avgMonthlySales / 4) / 10000;
+            $estimatedOverheadTime = $leadTime + $adminTime * \max($minimumOrderQuantity, $avgMonthlySales / 4) / FloatInt::DIVISOR;
 
             $orderQuantity = 0;
             $orderRange = 0;
@@ -262,7 +268,7 @@ final class CliController extends Controller
                         $orderQuantity = $orderQuantity - $mod + ($orderQuantityStep - $mod < $mod ? $orderQuantityStep : 0) + $minimumOrderQuantity;
                     }
 
-                    $estimatedOverheadTime = $leadTime + $adminTime * $orderQuantity / 10000;
+                    $estimatedOverheadTime = $leadTime + $adminTime * $orderQuantity / FloatInt::DIVISOR;
                 }
             }
 
@@ -290,26 +296,17 @@ final class CliController extends Controller
                 ->where('id', (int) $price['supplier'])
                 ->execute();
 
-            // @question Consider to add gross price
-            $suggestions[$item->id] = [
-                'item' => $item,
-                'supplier' => $supplier,
-                'quantity' => new FloatInt($orderQuantity),
-                'singlePrice' => $price['bestActualPrice'],
-                'totalPrice' => new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / 10000)),
-                'stock' => new FloatInt($totalStockQuantity),
-                'reserved' => new FloatInt($totalReservedQuantity),
-                'ordered' => new FloatInt($totalOrderedQuantity),
-                'minquantity' => new FloatInt($minimumOrderQuantity),
-                'minstock' => new FloatInt($minimumStockQuantity),
-                'quantitystep' => new FloatInt($orderQuantityStep),
-                'avgsales' => new FloatInt($avgMonthlySales),
-                'range_stock' => $currentRangeStock, // range only considering stock + ordered
-                'range_reserved' => $currentRangeReserved, // range considering stock - reserved + ordered
-                'range_ordered' => $orderRange, // range ADDED with suggested new order quantity
-            ];
+            $element = new OrderSuggestionElement();
+            $element->status = OrderSuggestionElementStatus::CALCULATED;
+            $element->modifiedBy = $suggestion->createdBy;
+            $element->quantity->value = $orderQuantity;
+            $element->item = $item;
+            $element->supplier = $supplier;
+            $element->costs = new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / FloatInt::DIVISOR));
+
+            $suggestion->elements[] = $element;
         }
 
-        return $suggestions;
+        return $suggestion;
     }
 }

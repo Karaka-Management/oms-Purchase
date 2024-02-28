@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Modules\Purchase\Controller;
 
-use Modules\Purchase\Models\OrderSuggestionMapper;
+use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\DataStorage\Database\Query\OrderType;
 use phpOMS\Message\RequestAbstract;
@@ -152,22 +152,35 @@ final class BackendController extends Controller
     public function viewPurchaseOrderSuggestion(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
-        $view->setTemplate('/Modules/Purchase/Theme/Backend/article-order-suggestion');
+        $view->setTemplate('/Modules/Purchase/Theme/Backend/order-suggestion');
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1002105001, $request, $response);
 
-        $view->data['suggestions'] = OrderSuggestionMapper::get()
+        $view->data['suggestion'] = OrderSuggestionMapper::get()
             ->with('createdBy')
             ->with('elements')
             ->with('elements/supplier')
+            ->with('elements/supplier/account')
             ->with('elements/item')
-            ->with('elements/bill')
+            ->with('elements/item/container')
             ->with('elements/item/l11n')
             ->with('elements/item/l11n/type')
+            ->with('elements/item/attributes')
+            ->with('elements/item/attributes/type')
+            ->with('elements/bill')
             ->where('id', (int) $request->getData('id'))
             ->where('elements/item/l11n/language', $response->header->l11n->language)
             ->where('elements/item/l11n/type/title', ['name1', 'name2'], 'IN')
+            ->where('elements/item/attributes/type/name', [
+                'minimum_stock_quantity',
+                'minimum_order_quantity',
+                'order_quantity_steps',
+                'order_suggestion_history_duration',
+                'segment', 'section', 'sales_group', 'product_group', 'product_type',], 'IN')
             ->sort('elements/supplier', OrderType::ASC)
             ->execute();
+
+        $view->data['suggestion_data'] = $this->app->moduleManager->get('Purchase', 'Api')
+            ->getOrderSuggestionElementData($view->data['suggestion']->elements);
 
         return $view;
     }
@@ -211,8 +224,11 @@ final class BackendController extends Controller
         $view->setTemplate('/Modules/Purchase/Theme/Backend/order-suggestion-list');
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1002105001, $request, $response);
 
-        $view->data['suggestions'] = $this->app->moduleManager->get('Purchase', 'Cli')
-            ->calculateSuggestions($response->header->l11n->language);
+        $view->data['suggestions'] = OrderSuggestionMapper::getAll()
+            ->with('createdBy')
+            ->with('elements')
+            ->sort('createdAt', OrderType::DESC)
+            ->execute();
 
         return $view;
     }
