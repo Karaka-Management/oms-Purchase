@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => 'สร้าง',
-    'Creator'              => 'ผู้สร้าง',
-    'Order'                => 'คำสั่ง',
-    'Ordered'              => 'ที่ได้รับคำสั่ง',
-    'Price'                => 'ราคา',
-    'Status'               => 'สถานะ',
-    'Stock'                => 'คลังสินค้า',
-    'Supplier'             => 'ผู้ผลิต',
+    'Created'  => 'สร้าง',
+    'Creator'  => 'ผู้สร้าง',
+    'Order'    => 'คำสั่ง',
+    'Ordered'  => 'ที่ได้รับคำสั่ง',
+    'Price'    => 'ราคา',
+    'Status'   => 'สถานะ',
+    'Stock'    => 'คลังสินค้า',
+    'Supplier' => 'ผู้ผลิต',
 ]];

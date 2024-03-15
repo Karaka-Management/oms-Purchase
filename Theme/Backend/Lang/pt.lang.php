@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => 'Criado',
-    'Creator'              => 'O Criador',
-    'Order'                => 'Pedido',
-    'Ordered'              => 'Encomendado',
-    'Price'                => 'Preço',
-    'Status'               => 'Status',
-    'Stock'                => 'Estoque',
-    'Supplier'             => 'Fornecedor',
+    'Created'  => 'Criado',
+    'Creator'  => 'O Criador',
+    'Order'    => 'Pedido',
+    'Ordered'  => 'Encomendado',
+    'Price'    => 'Preço',
+    'Status'   => 'Status',
+    'Stock'    => 'Estoque',
+    'Supplier' => 'Fornecedor',
 ]];

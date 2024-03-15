@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => 'Δημιουργήθηκε',
-    'Creator'              => 'Δημιουργός',
-    'Order'                => 'Σειρά',
-    'Ordered'              => 'Διέταξε',
-    'Price'                => 'Τιμή',
-    'Status'               => 'Κατάσταση',
-    'Stock'                => 'Στοκ',
-    'Supplier'             => 'Προμηθευτής',
+    'Created'  => 'Δημιουργήθηκε',
+    'Creator'  => 'Δημιουργός',
+    'Order'    => 'Σειρά',
+    'Ordered'  => 'Διέταξε',
+    'Price'    => 'Τιμή',
+    'Status'   => 'Κατάσταση',
+    'Stock'    => 'Στοκ',
+    'Supplier' => 'Προμηθευτής',
 ]];

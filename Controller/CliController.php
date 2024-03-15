@@ -84,12 +84,21 @@ final class CliController extends Controller
         return $view;
     }
 
+    /**
+     * Create a suggestion
+     *
+     * @param RequestAbstract $request Request
+     *
+     * @return OrderSuggestion
+     *
+     * @since 1.0.0
+     */
     public function createSuggestionFromRequest(RequestAbstract $request) : OrderSuggestion
     {
         $showIrrelevant = $request->getDataBool('-irrelevant') ?? false;
-        $now = new \DateTime('now');
+        $now            = new \DateTime('now');
 
-        $suggestion = new OrderSuggestion();
+        $suggestion            = new OrderSuggestion();
         $suggestion->createdBy = new NullAccount($request->getDataInt('-user') ?? 1);
 
         // @todo define order details per item+stock
@@ -99,6 +108,7 @@ final class CliController extends Controller
         // @question Consider to save suggestion as model in db
         //      This would allow users to work on it for a longer time
         //      It would also allow for an easier approval process
+        /** @var \Modules\ItemManagement\Models\Item[] $items */
         $items = ItemMapper::getAll()
             ->with('container')
             ->with('l11n')
@@ -140,7 +150,7 @@ final class CliController extends Controller
         $end = SmartDateTime::endOfMonth();
         $end->smartModify(0, -1);
 
-        $salesHistory = SalesBillMapper::getItemMonthlySalesQuantity($itemIds, $start, $end);
+        $salesHistory  = SalesBillMapper::getItemMonthlySalesQuantity($itemIds, $start, $end);
         $distributions = \Modules\WarehouseManagement\Models\StockMapper::getStockDistribution($itemIds);
 
         $unitAttribute = UnitAttributeMapper::get()
@@ -150,13 +160,13 @@ final class CliController extends Controller
             ->where('type/name', 'business_year_start')
             ->execute();
 
-        $businessStart = $unitAttribute->id === 0 ? 1 : $unitAttribute->value->getValue();
+        $businessStart = $unitAttribute->id === 0 ? 1 : $unitAttribute->value->valueInt;
 
         $historyStart = (int) $start->format('m');
-        $historyEnd = (int) $end->format('m');
+        $historyEnd   = (int) $end->format('m');
 
         foreach ($items as $item) {
-            $maxHistoryDuration = $item->getAttribute('order_suggestion_history_duration')->value->getValue() ?? 12;
+            $maxHistoryDuration = $item->getAttribute('order_suggestion_history_duration')->value->valueInt ?? 12;
 
             $salesForecast = [];
 
@@ -206,7 +216,7 @@ final class CliController extends Controller
 
             // Calculate current range using historic sales + other current stats
             $totalHistoricSales = \array_sum($salesForecast);
-            $avgMonthlySales = (int) \round($totalHistoricSales / $actualHistoricDuration);
+            $avgMonthlySales    = (int) \round($totalHistoricSales / $actualHistoricDuration);
 
             $totalStockQuantity = 0;
             foreach ($distributions['dists'][$item->id] ?? [] as $dist) {
@@ -214,7 +224,7 @@ final class CliController extends Controller
             }
 
             $totalReservedQuantity = $distributions['reserved'][$item->id] ?? 0;
-            $totalOrderedQuantity = $distributions['ordered'][$item->id] ?? 0;
+            $totalOrderedQuantity  = $distributions['ordered'][$item->id] ?? 0;
 
             $currentRangeStock    = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity) / $avgMonthlySales;
             $currentRangeReserved = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity - $totalReservedQuantity) / $avgMonthlySales;
@@ -225,30 +235,30 @@ final class CliController extends Controller
             //      -> maybe it's possible to consider the expected delivery time?
 
             // Get minimum range we want
-            $wantedStockRange = $item->getAttribute('minimum_stock_range')->value->getValue() ?? 1;
+            $wantedStockRange = $item->getAttribute('minimum_stock_range')->value->valueInt ?? 1;
 
-            $minimumStockQuantity = $item->getAttribute('minimum_stock_quantity')->value->getValue() ?? 0;
+            $minimumStockQuantity = $item->getAttribute('minimum_stock_quantity')->value->valueInt ?? 0;
             $minimumStockQuantity = (int) \round($minimumStockQuantity * FloatInt::DIVISOR);
-            $minimumStockRange = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
+            $minimumStockRange    = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
             $minimumStockQuantity = (int) \round($minimumStockRange * $avgMonthlySales);
 
-            $minimumOrderQuantity = $item->getAttribute('minimum_order_quantity')->value->getValue() ?? 0;
+            $minimumOrderQuantity = $item->getAttribute('minimum_order_quantity')->value->valueInt ?? 0;
             $minimumOrderQuantity = (int) \round($minimumOrderQuantity * FloatInt::DIVISOR);
 
-            $orderQuantityStep = $item->getAttribute('order_quantity_steps')->value->getValue() ?? 1;
+            $orderQuantityStep = $item->getAttribute('order_quantity_steps')->value->valueInt ?? 1;
             $orderQuantityStep = (int) \round($orderQuantityStep * FloatInt::DIVISOR);
 
-            $leadTime = $item->getAttribute('lead_time')->value->getValue() ?? 3; // in days
+            $leadTime = $item->getAttribute('lead_time')->value->valueInt ?? 3; // in days
 
             // @todo Business hours don't have to be 8 hours
             // we assume 10 seconds per item if nothing is defined for (invoice handling, stock handling)
-            $adminTime = ($item->getAttribute('admin_time')->value->getValue() ?? 10) / (8 * 60 * 60); // from seconds -> days
+            $adminTime = ($item->getAttribute('admin_time')->value->valueInt ?? 10) / (8 * 60 * 60); // from seconds -> days
 
             // Overhead time in days by estimating at least 1 week worth of order quantity
             $estimatedOverheadTime = $leadTime + $adminTime * \max($minimumOrderQuantity, $avgMonthlySales / 4) / FloatInt::DIVISOR;
 
             $orderQuantity = 0;
-            $orderRange = 0;
+            $orderRange    = 0;
 
             if ($minimumStockRange - ($currentRangeReserved - $estimatedOverheadTime / 30) > 0) {
                 // Iteratively approaching overhead time
@@ -296,13 +306,13 @@ final class CliController extends Controller
                 ->where('id', (int) $price['supplier'])
                 ->execute();
 
-            $element = new OrderSuggestionElement();
-            $element->status = OrderSuggestionElementStatus::CALCULATED;
-            $element->modifiedBy = $suggestion->createdBy;
+            $element                  = new OrderSuggestionElement();
+            $element->status          = OrderSuggestionElementStatus::CALCULATED;
+            $element->modifiedBy      = $suggestion->createdBy;
             $element->quantity->value = $orderQuantity;
-            $element->item = $item;
-            $element->supplier = $supplier;
-            $element->costs = new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / FloatInt::DIVISOR));
+            $element->item            = $item;
+            $element->supplier        = $supplier;
+            $element->costs           = new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / FloatInt::DIVISOR));
 
             $suggestion->elements[] = $element;
         }

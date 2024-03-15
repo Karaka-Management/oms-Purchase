@@ -61,8 +61,8 @@ final class ApiController extends Controller
             return;
         }
 
-        $supplier = $request->getDataString('supplier');
-        $productGroup = $request->getDataInt('product_group');
+        $supplier       = $request->getDataString('supplier');
+        $productGroup   = $request->getDataInt('product_group');
         $showIrrelevant = !($request->getDataBool('hide_irrelevant') ?? true);
 
         try {
@@ -84,6 +84,17 @@ final class ApiController extends Controller
         $this->createStandardBackgroundResponse($request, $response, []);
     }
 
+    /**
+     * Returns data from an order suggestion element.
+     *
+     * This also re-calculates a lot of values because some depend on the current stock amounts, prices etc.
+     *
+     * @param OrderSuggestionElement[] $elements Elements of our order
+     *
+     * @return array<int, array{singlePrice:FloatInt, totalPrice:FloatInt, stock:FloatInt, reserved:FloatInt, ordered:FloatInt, minquantity:FloatInt, minstock:FloatInt, quantitystep:FloatInt, avgsales:FloatInt, range_stock:float, range_reserved:float, range_ordered:float}>
+     *
+     * @since 1.0.0
+     */
     public function getOrderSuggestionElementData(array $elements) : array
     {
         if (empty($elements)) {
@@ -102,16 +113,16 @@ final class ApiController extends Controller
         $end = SmartDateTime::endOfMonth();
         $end->smartModify(0, -1);
 
-        $salesHistory = SalesBillMapper::getItemMonthlySalesQuantity($itemIds, $start, $end);
+        $salesHistory  = SalesBillMapper::getItemMonthlySalesQuantity($itemIds, $start, $end);
         $distributions = \Modules\WarehouseManagement\Models\StockMapper::getStockDistribution($itemIds);
 
         $historyStart = (int) $start->format('m');
-        $historyEnd = (int) $end->format('m');
+        $historyEnd   = (int) $end->format('m');
 
         // @todo A lot of the code below is mirrored in the CliController for ALL items.
         //      Pull out some of the code so we only need to maintain one version
         foreach ($elements as $element) {
-            $maxHistoryDuration = $element->item->getAttribute('order_suggestion_history_duration')->value->getValue() ?? 12;
+            $maxHistoryDuration = $element->item->getAttribute('order_suggestion_history_duration')->value->valueInt ?? 12;
 
             $salesForecast = [];
 
@@ -161,7 +172,7 @@ final class ApiController extends Controller
 
             // Calculate current range using historic sales + other current stats
             $totalHistoricSales = \array_sum($salesForecast);
-            $avgMonthlySales = (int) \round($totalHistoricSales / $actualHistoricDuration);
+            $avgMonthlySales    = (int) \round($totalHistoricSales / $actualHistoricDuration);
 
             $totalStockQuantity = 0;
             foreach ($distributions['dists'][$element->item->id] ?? [] as $dist) {
@@ -169,7 +180,7 @@ final class ApiController extends Controller
             }
 
             $totalReservedQuantity = $distributions['reserved'][$element->item->id] ?? 0;
-            $totalOrderedQuantity = $distributions['ordered'][$element->item->id] ?? 0;
+            $totalOrderedQuantity  = $distributions['ordered'][$element->item->id] ?? 0;
 
             $currentRangeStock    = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity) / $avgMonthlySales;
             $currentRangeReserved = $avgMonthlySales == 0 ? \PHP_INT_MAX : ($totalStockQuantity + $totalOrderedQuantity - $totalReservedQuantity) / $avgMonthlySales;
@@ -179,19 +190,19 @@ final class ApiController extends Controller
             //      -> see SD HTS (depending on other shipments -> not delivered even if available)
             //      -> maybe it's possible to consider the expected delivery time?
 
-            $minimumStockQuantity = $element->item->getAttribute('minimum_stock_quantity')->value->getValue() ?? 0;
-            $minimumStockQuantity = (int) \round($minimumStockQuantity * 1000);
-            $minimumStockRange = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
+            $minimumStockQuantity = $element->item->getAttribute('minimum_stock_quantity')->value->valueInt ?? 0;
+            $minimumStockQuantity = (int) \round($minimumStockQuantity * FloatInt::DIVISOR); // @bug why? shouldn't the value already be 10,000?
+            $minimumStockRange    = $avgMonthlySales === 0 ? 0 : $minimumStockQuantity / $avgMonthlySales;
             $minimumStockQuantity = (int) \round($minimumStockRange * $avgMonthlySales);
 
-            $minimumOrderQuantity = $element->item->getAttribute('minimum_order_quantity')->value->getValue() ?? 0;
+            $minimumOrderQuantity = $element->item->getAttribute('minimum_order_quantity')->value->valueInt ?? 0;
             $minimumOrderQuantity = (int) \round($minimumOrderQuantity * FloatInt::DIVISOR);
 
-            $orderQuantityStep = $element->item->getAttribute('order_quantity_steps')->value->getValue() ?? 1;
+            $orderQuantityStep = $element->item->getAttribute('order_quantity_steps')->value->valueInt ?? 1;
             $orderQuantityStep = (int) \round($orderQuantityStep * FloatInt::DIVISOR);
 
             $orderQuantity = $element->quantity->value;
-            $orderRange = $avgMonthlySales === 0 ? \PHP_INT_MAX : $element->quantity->value / $avgMonthlySales;
+            $orderRange    = $avgMonthlySales === 0 ? \PHP_INT_MAX : $element->quantity->value / $avgMonthlySales;
 
             $internalRequest = new HttpRequest();
             $internalRequest->setData('price_quantity', $orderQuantity);
@@ -201,18 +212,18 @@ final class ApiController extends Controller
 
             // @question Consider to add gross price
             $data[$element->item->id] = [
-                'singlePrice' => $price['bestActualPrice'],
-                'totalPrice' => new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / FloatInt::DIVISOR)),
-                'stock' => new FloatInt($totalStockQuantity),
-                'reserved' => new FloatInt($totalReservedQuantity),
-                'ordered' => new FloatInt($totalOrderedQuantity),
-                'minquantity' => new FloatInt($minimumOrderQuantity),
-                'minstock' => new FloatInt($minimumStockQuantity),
-                'quantitystep' => new FloatInt($orderQuantityStep),
-                'avgsales' => new FloatInt($avgMonthlySales),
-                'range_stock' => $currentRangeStock, // range only considering stock + ordered
+                'singlePrice'    => $price['bestActualPrice'],
+                'totalPrice'     => new FloatInt((int) ($price['bestActualPrice']->value * $orderQuantity / FloatInt::DIVISOR)),
+                'stock'          => new FloatInt($totalStockQuantity),
+                'reserved'       => new FloatInt($totalReservedQuantity),
+                'ordered'        => new FloatInt($totalOrderedQuantity),
+                'minquantity'    => new FloatInt($minimumOrderQuantity),
+                'minstock'       => new FloatInt($minimumStockQuantity),
+                'quantitystep'   => new FloatInt($orderQuantityStep),
+                'avgsales'       => new FloatInt($avgMonthlySales),
+                'range_stock'    => $currentRangeStock, // range only considering stock + ordered
                 'range_reserved' => $currentRangeReserved, // range considering stock - reserved + ordered
-                'range_ordered' => $orderRange, // range ADDED with suggested new order quantity
+                'range_ordered'  => $orderRange, // range ADDED with suggested new order quantity
             ];
         }
 
@@ -274,7 +285,7 @@ final class ApiController extends Controller
             return;
         }
 
-        $elements = $request->getDataJson('element');
+        $elements   = $request->getDataJson('element');
         $quantities = $request->getDataJson('quantity');
 
         // Missmatch -> data corrupted
@@ -286,7 +297,7 @@ final class ApiController extends Controller
         }
 
         foreach ($elements as $idx => $e) {
-            $e = (int) $e;
+            $e    = (int) $e;
             $temp = new FloatInt($quantities[$idx]);
 
             foreach ($old->elements as $element) {
@@ -306,7 +317,7 @@ final class ApiController extends Controller
                 $internalRequest->setData('price_quantity', $new->quantity->value);
                 $internalRequest->setData('price_type', PriceType::PURCHASE);
 
-                $price = $this->app->moduleManager->get('Billing', 'ApiPrice')->findBestPrice($internalRequest, $element->item);
+                $price      = $this->app->moduleManager->get('Billing', 'ApiPrice')->findBestPrice($internalRequest, $element->item);
                 $new->costs = new FloatInt((int) ($price['bestActualPrice']->value * $new->quantity->value / FloatInt::DIVISOR));
 
                 $this->updateModel($request->header->account, $element, $new, OrderSuggestionElementMapper::class, 'order_suggestion_element', $request->getOrigin());

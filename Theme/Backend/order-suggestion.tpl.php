@@ -65,12 +65,12 @@ echo $this->data['nav']->render();
                     <td><?= $this->getHtml('Costs'); ?>
                 <tbody>
                 <?php
-                    $now = new SmartDateTime('now');
-                    $total = new FloatInt();
-                    $subtotal = new FloatInt();
+                    $now          = new SmartDateTime('now');
+                    $total        = new FloatInt();
+                    $subtotal     = new FloatInt();
                     $lastSupplier = 0;
 
-                    $supplier = $this->request->getDataString('supplier');
+                    $supplier          = $this->request->getDataString('supplier');
                     $hasSupplierSwitch = false;
 
                     $isFirst = true;
@@ -89,7 +89,7 @@ echo $this->data['nav']->render();
                 <?php
                     if (empty($supplier) && $lastSupplier !== $element->supplier->id && !$isFirst) :
                         $hasSupplierSwitch = true;
-                        $lastSupplier = $element->supplier->id;
+                        $lastSupplier      = $element->supplier->id;
                 ?>
                     <tr class="hl-7">
                         <td colspan="15"><?= $this->printHtml($element->supplier->account->name1); ?> <?= $this->printHtml($element->supplier->account->name2); ?>
@@ -125,7 +125,7 @@ echo $this->data['nav']->render();
                             (int) ($months = ($this->data['suggestion_data'][$element->item->id]['range_ordered']
                                 + $this->data['suggestion_data'][$element->item->id]['range_reserved'])),
                             (int) (($months - ((int) $months)) * 30))
-                            ->format('Y-m-d')
+                            ->format('Y-m-d');
                         ?>
                     <td><?= $this->data['suggestion_data'][$element->item->id]['singlePrice']->getAmount(); ?>
                     <td><?= $element->costs->getAmount(); ?>

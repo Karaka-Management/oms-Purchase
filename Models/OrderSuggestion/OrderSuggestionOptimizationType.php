@@ -33,5 +33,4 @@ abstract class OrderSuggestionOptimizationType extends Enum
     public const COST = 2; // Suggestion focuses on creating better prices if volume discounts exist.
 
     public const JUST_IN_TIME = 3; // Suggestion focuses on calculating minimum stock quantities.
-
 }

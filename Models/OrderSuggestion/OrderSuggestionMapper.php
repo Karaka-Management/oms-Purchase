@@ -18,14 +18,14 @@ use Modules\Admin\Models\AccountMapper;
 use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 
 /**
- * Client mapper class.
+ * OrderSuggestion mapper class.
  *
  * @package Modules\Purchase\Models\OrderSuggestion
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
  *
- * @template T of Client
+ * @template T of OrderSuggestion
  * @extends DataMapperFactory<T>
  */
 final class OrderSuggestionMapper extends DataMapperFactory
@@ -38,9 +38,9 @@ final class OrderSuggestionMapper extends DataMapperFactory
      */
     public const COLUMNS = [
         'purchase_order_suggestion_id'         => ['name' => 'purchase_order_suggestion_id',         'type' => 'int',      'internal' => 'id'],
-        'purchase_order_suggestion_status'         => ['name' => 'purchase_order_suggestion_status',         'type' => 'int',   'internal' => 'status'],
+        'purchase_order_suggestion_status'     => ['name' => 'purchase_order_suggestion_status',         'type' => 'int',   'internal' => 'status'],
         'purchase_order_suggestion_created_by' => ['name' => 'purchase_order_suggestion_created_by', 'type' => 'int',   'internal' => 'createdBy'],
-        'purchase_order_suggestion_created_at'     => ['name' => 'purchase_order_suggestion_created_at',     'type' => 'DateTimeImmutable',      'internal' => 'createdAt'],
+        'purchase_order_suggestion_created_at' => ['name' => 'purchase_order_suggestion_created_at',     'type' => 'DateTimeImmutable',      'internal' => 'createdAt'],
     ];
 
     /**

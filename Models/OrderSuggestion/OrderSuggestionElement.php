@@ -53,13 +53,18 @@ class OrderSuggestionElement
 
     public FloatInt $costs;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public function __construct()
     {
         $this->modifiedBy = new NullAccount();
         $this->modifiedAt = new \DateTimeImmutable('now');
-        $this->item = new NullItem();
-        $this->supplier = new NullSupplier();
-        $this->quantity = new FloatInt();
-        $this->costs = new FloatInt();
+        $this->item       = new NullItem();
+        $this->supplier   = new NullSupplier();
+        $this->quantity   = new FloatInt();
+        $this->costs      = new FloatInt();
     }
 }

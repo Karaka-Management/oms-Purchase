@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => 'Luotu',
-    'Creator'              => 'Luoja',
-    'Order'                => 'Tilaus',
-    'Ordered'              => 'Tilattu',
-    'Price'                => 'Hinta',
-    'Status'               => 'Tila',
-    'Stock'                => 'Varasto',
-    'Supplier'             => 'Toimittaja',
+    'Created'  => 'Luotu',
+    'Creator'  => 'Luoja',
+    'Order'    => 'Tilaus',
+    'Ordered'  => 'Tilattu',
+    'Price'    => 'Hinta',
+    'Status'   => 'Tila',
+    'Stock'    => 'Varasto',
+    'Supplier' => 'Toimittaja',
 ]];

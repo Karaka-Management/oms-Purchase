@@ -57,5 +57,5 @@ return [
                 'state'  => PermissionCategory::ORDER,
             ],
         ],
-    ]
+    ],
 ];

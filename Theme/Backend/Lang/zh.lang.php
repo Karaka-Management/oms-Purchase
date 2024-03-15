@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => '创造了',
-    'Creator'              => '创造者',
-    'Order'                => '命令',
-    'Ordered'              => '订购',
-    'Price'                => '价格',
-    'Status'               => '地位',
-    'Stock'                => '库存',
-    'Supplier'             => '供应商',
+    'Created'  => '创造了',
+    'Creator'  => '创造者',
+    'Order'    => '命令',
+    'Ordered'  => '订购',
+    'Price'    => '价格',
+    'Status'   => '地位',
+    'Stock'    => '库存',
+    'Supplier' => '供应商',
 ]];

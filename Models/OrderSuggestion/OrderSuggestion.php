@@ -36,14 +36,30 @@ class OrderSuggestion
 
     public \DateTimeImmutable $createdAt;
 
+    /**
+     * Order elements
+     *
+     * @var OrderSuggestionElement[]
+     * @since 1.0.0
+     */
     public array $elements = [];
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->createdBy = new NullAccount();
         $this->createdAt = new \DateTimeImmutable('now');
     }
 
+    /**
+     * Calculate total costs of order
+     *
+     * @return FloatInt
+     *
+     * @since 1.0.0
+     */
     public function getTotalCosts() : FloatInt
     {
         $total = new FloatInt();

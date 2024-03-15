@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => 'Létrehozott',
-    'Creator'              => 'Teremtő',
-    'Order'                => 'Rendelés',
-    'Ordered'              => 'Elrendelt',
-    'Price'                => 'Ár',
-    'Status'               => 'Állapot',
-    'Stock'                => 'Készlet',
-    'Supplier'             => 'Támogató',
+    'Created'  => 'Létrehozott',
+    'Creator'  => 'Teremtő',
+    'Order'    => 'Rendelés',
+    'Ordered'  => 'Elrendelt',
+    'Price'    => 'Ár',
+    'Status'   => 'Állapot',
+    'Stock'    => 'Készlet',
+    'Supplier' => 'Támogató',
 ]];

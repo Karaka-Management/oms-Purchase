@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 return ['Purchase' => [
-    'Created'              => '作成した',
-    'Creator'              => 'クリエーター',
-    'Order'                => '注文',
-    'Ordered'              => '順序付けられました',
-    'Price'                => '価格',
-    'Status'               => '状態',
-    'Stock'                => 'ストック',
-    'Supplier'             => 'サプライヤー',
+    'Created'  => '作成した',
+    'Creator'  => 'クリエーター',
+    'Order'    => '注文',
+    'Ordered'  => '順序付けられました',
+    'Price'    => '価格',
+    'Status'   => '状態',
+    'Stock'    => 'ストック',
+    'Supplier' => 'サプライヤー',
 ]];
