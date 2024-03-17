@@ -15,13 +15,15 @@ declare(strict_types=1);
 return ['Navigation' => [
     'Analysis'         => 'Analyse',
     'Articles'         => 'Artikel',
-    'Create'           => 'Erstellen',
     'Invoice'          => 'Rechnung',
     'Invoices'         => 'Rechnungen',
-    'List'             => 'Liste',
     'OrderSuggestions' => 'Bestellvorschläg',
     'PendingOrders'    => 'Ausstehende Bestellungen',
     'Profile'          => 'Profil',
     'Purchase'         => 'Kaufen',
     'Suppliers'        => 'Lieferanten',
+    'TaxCodes'         => 'Steuerkennzeichen',
+    'TaxCombinations'  => 'Steuerkombination',
+    'List'             => 'Liste',
+    'Create'           => 'Erstellen',
 ]];
