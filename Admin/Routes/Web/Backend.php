@@ -18,7 +18,7 @@ use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
 return [
-    '^.*/purchase/invoice/create(\?.*$|$)' => [
+    '^/purchase/invoice/create(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceCreate',
             'verb'       => RouteVerb::GET,
@@ -29,7 +29,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/invoice/list(\?.*$|$)' => [
+    '^/purchase/invoice/list(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceList',
             'verb'       => RouteVerb::GET,
@@ -40,7 +40,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/article/list(\?.*$|$)' => [
+    '^/purchase/article/list(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleList',
             'verb'       => RouteVerb::GET,
@@ -51,7 +51,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/article/create(\?.*$|$)' => [
+    '^/purchase/article/create(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleCreate',
             'verb'       => RouteVerb::GET,
@@ -62,7 +62,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/article/view(\?.*$|$)' => [
+    '^/purchase/article/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleView',
             'verb'       => RouteVerb::GET,
@@ -73,7 +73,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/order/suggestion/view(\?.*$|$)' => [
+    '^/purchase/order/suggestion/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestion',
             'verb'       => RouteVerb::GET,
@@ -84,7 +84,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/order/suggestion/create(\?.*$|$)' => [
+    '^/purchase/order/suggestion/create(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionCreate',
             'verb'       => RouteVerb::GET,
@@ -95,7 +95,7 @@ return [
             ],
         ],
     ],
-    '^.*/purchase/order/suggestion/list(\?.*$|$)' => [
+    '^/purchase/order/suggestion/list(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionList',
             'verb'       => RouteVerb::GET,
