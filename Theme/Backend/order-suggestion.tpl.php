@@ -29,7 +29,7 @@ echo $this->data['nav']->render();
             <div class="portlet-body">
                 <input type="hidden" name="id" form="suggestionList" value="<?= $this->data['suggestion']->id; ?>">
                 <input name="save" type="submit" form="suggestionList" value="<?= $this->getHtml('Save', '0', '0'); ?>">
-                <!--<input name="order" type="submit" form="suggestionList" formaction="<?= UriFactory::build('{/api}purchase/order/suggestion/bill'); ?>" formmethod="put" value="<?= $this->getHtml('Order'); ?>">-->
+                <!--<input name="order" type="submit" form="suggestionList" formaction="<?= UriFactory::build('{/api}purchase/order/suggestion/bill?csrf={$CSRF}'); ?>" formmethod="put" value="<?= $this->getHtml('Order'); ?>">-->
                 <input name="delete" class="cancel" type="submit" form="suggestionList" formmethod="delete" value="<?= $this->getHtml('Delete', '0', '0'); ?>">
             </div>
         </div>
