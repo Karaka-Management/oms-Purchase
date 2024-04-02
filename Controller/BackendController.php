@@ -228,7 +228,7 @@ final class BackendController extends Controller
             ->with('createdBy')
             ->with('elements')
             ->sort('createdAt', OrderType::DESC)
-            ->execute();
+            ->executeGetArray();
 
         return $view;
     }

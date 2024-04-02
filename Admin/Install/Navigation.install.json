@@ -58,21 +58,6 @@
                         "children": []
                     }
                 ]
-            },
-            {
-                "id": 1002106001,
-                "pid": "/",
-                "type": 2,
-                "subtype": 1,
-                "name": "Analysis",
-                "uri": "{/base}/purchase/analysis?{?}",
-                "target": "self",
-                "icon": null,
-                "order": 15,
-                "from": "Purchase",
-                "permission": { "permission": 2, "category": null, "element": null },
-                "parent": 1002101001,
-                "children": []
             }
         ]
     }

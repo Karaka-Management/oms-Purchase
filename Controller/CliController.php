@@ -127,7 +127,7 @@ final class CliController extends Controller
                 'order_suggestion_comparison_duration_type',
                 'segment', 'section', 'sales_group', 'product_group', 'product_type',
             ], 'IN')
-            ->execute();
+            ->executeGetArray();
 
         // @todo check for supplier of item if set
         // @todo check for product type of item if set
