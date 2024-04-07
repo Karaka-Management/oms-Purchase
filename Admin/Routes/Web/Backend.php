@@ -22,6 +22,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceCreate',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
@@ -33,6 +34,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceList',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
@@ -44,6 +46,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleList',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
@@ -55,6 +58,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleCreate',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
@@ -66,6 +70,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleView',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
@@ -77,6 +82,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestion',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,
@@ -88,6 +94,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionCreate',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::CREATE,
@@ -99,6 +106,7 @@ return [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestionList',
             'verb'       => RouteVerb::GET,
+            'active' => true,
             'permission' => [
                 'module' => BackendController::NAME,
                 'type'   => PermissionType::READ,

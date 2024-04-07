@@ -23,6 +23,7 @@ return [
             'dest'       => '\Modules\Purchase\Controller\ApiController:apiOrderSuggestionCreate',
             'verb'       => RouteVerb::PUT,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::CREATE,
@@ -33,6 +34,7 @@ return [
             'dest'       => '\Modules\Purchase\Controller\ApiController:apiOrderSuggestionUpdate',
             'verb'       => RouteVerb::SET,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::MODIFY,
@@ -43,6 +45,7 @@ return [
             'dest'       => '\Modules\Purchase\Controller\ApiController:apiOrderSuggestionDelete',
             'verb'       => RouteVerb::DELETE,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::MODIFY,
@@ -55,6 +58,7 @@ return [
             'dest'       => '\Modules\Purchase\Controller\ApiController:apiOrderSuggestionBillCreate',
             'verb'       => RouteVerb::PUT,
             'csrf'       => true,
+            'active' => true,
             'permission' => [
                 'module' => ApiController::NAME,
                 'type'   => PermissionType::CREATE,
