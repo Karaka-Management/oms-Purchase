@@ -130,7 +130,7 @@ echo $this->data['nav']->render();
                     <td><?= $this->data['suggestion_data'][$element->item->id]['singlePrice']->getAmount(); ?>
                     <td><?= $element->costs->getAmount(); ?>
                 <?php endforeach; ?>
-                <?php if (empty($supplier)) : ?>
+                <?php if (empty($supplier) && !empty($this->data['suggestion']->elements)) : ?>
                     <tr class="hl-7">
                         <td colspan="15"><?= $this->printHtml($element->supplier->account->name1); ?> <?= $this->printHtml($element->supplier->account->name2); ?>
                         <td><?= $subtotal->getAmount(); ?>

@@ -17,6 +17,7 @@ namespace Modules\Purchase\Controller;
 use Modules\Purchase\Models\OrderSuggestion\OrderSuggestionMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\DataStorage\Database\Query\OrderType;
+use phpOMS\Message\Http\RequestStatusCode;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
@@ -152,6 +153,13 @@ final class BackendController extends Controller
     public function viewPurchaseOrderSuggestion(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
+        if (!$request->hasData('id')) {
+            $response->header->status = RequestStatusCode::R_404;
+            $view->setTemplate('/Web/Backend/Error/404');
+
+            return $view;
+        }
+
         $view->setTemplate('/Modules/Purchase/Theme/Backend/order-suggestion');
         $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1002105001, $request, $response);
 

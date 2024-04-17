@@ -18,66 +18,6 @@ use phpOMS\Account\PermissionType;
 use phpOMS\Router\RouteVerb;
 
 return [
-    '^/purchase/invoice/create(\?.*$|$)' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceCreate',
-            'verb'       => RouteVerb::GET,
-            'active'     => true,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::CREATE,
-                'state'  => PermissionCategory::INVOICE,
-            ],
-        ],
-    ],
-    '^/purchase/invoice/list(\?.*$|$)' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseInvoiceList',
-            'verb'       => RouteVerb::GET,
-            'active'     => true,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::READ,
-                'state'  => PermissionCategory::INVOICE,
-            ],
-        ],
-    ],
-    '^/purchase/article/list(\?.*$|$)' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleList',
-            'verb'       => RouteVerb::GET,
-            'active'     => true,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::READ,
-                'state'  => PermissionCategory::ARTICLE,
-            ],
-        ],
-    ],
-    '^/purchase/article/create(\?.*$|$)' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleCreate',
-            'verb'       => RouteVerb::GET,
-            'active'     => true,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::CREATE,
-                'state'  => PermissionCategory::ARTICLE,
-            ],
-        ],
-    ],
-    '^/purchase/article/view(\?.*$|$)' => [
-        [
-            'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseArticleView',
-            'verb'       => RouteVerb::GET,
-            'active'     => true,
-            'permission' => [
-                'module' => BackendController::NAME,
-                'type'   => PermissionType::READ,
-                'state'  => PermissionCategory::ARTICLE,
-            ],
-        ],
-    ],
     '^/purchase/order/suggestion/view(\?.*$|$)' => [
         [
             'dest'       => '\Modules\Purchase\Controller\BackendController:viewPurchaseOrderSuggestion',
