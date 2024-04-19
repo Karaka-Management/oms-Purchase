@@ -153,15 +153,6 @@ final class BackendController extends Controller
     public function viewPurchaseOrderSuggestion(RequestAbstract $request, ResponseAbstract $response, array $data = []) : RenderableInterface
     {
         $view = new View($this->app->l11nManager, $request, $response);
-        if (!$request->hasData('id')) {
-            $response->header->status = RequestStatusCode::R_404;
-            $view->setTemplate('/Web/Backend/Error/404');
-
-            return $view;
-        }
-
-        $view->setTemplate('/Modules/Purchase/Theme/Backend/order-suggestion');
-        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1002105001, $request, $response);
 
         $view->data['suggestion'] = OrderSuggestionMapper::get()
             ->with('createdBy')
@@ -186,6 +177,16 @@ final class BackendController extends Controller
                 'segment', 'section', 'sales_group', 'product_group', 'product_type',], 'IN')
             ->sort('elements/supplier', OrderType::ASC)
             ->execute();
+
+        if ($view->data['suggestion']->id === 0) {
+            $response->header->status = RequestStatusCode::R_404;
+            $view->setTemplate('/Web/Backend/Error/404');
+
+            return $view;
+        }
+
+        $view->setTemplate('/Modules/Purchase/Theme/Backend/order-suggestion');
+        $view->data['nav'] = $this->app->moduleManager->get('Navigation')->createNavigationMid(1002105001, $request, $response);
 
         $view->data['suggestion_data'] = $this->app->moduleManager->get('Purchase', 'Api')
             ->getOrderSuggestionElementData($view->data['suggestion']->elements);
