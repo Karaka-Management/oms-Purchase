@@ -78,7 +78,7 @@ final class ApiController extends Controller
             );
         } catch (\Throwable $t) {
             $response->header->status = RequestStatusCode::R_400;
-            $this->app->logger?->error($t->getMessage());
+            $this->app->logger->error($t->getMessage());
         }
 
         $this->createStandardBackgroundResponse($request, $response, []);
