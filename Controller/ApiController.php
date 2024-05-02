@@ -37,6 +37,10 @@ use phpOMS\System\SystemUtils;
  * @license OMS License 2.0
  * @link    https://jingga.app
  * @since   1.0.0
+ *
+ * @feature Create feature which re-calculates some of the item number
+ *      (minimum_stock_range, lead_time, ...) based on history numbers
+ *      https://github.com/Karaka-Management/oms-Purchase/issues/3
  */
 final class ApiController extends Controller
 {

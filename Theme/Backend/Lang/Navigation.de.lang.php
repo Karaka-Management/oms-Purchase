@@ -22,8 +22,6 @@ return ['Navigation' => [
     'Profile'          => 'Profil',
     'Purchase'         => 'Kaufen',
     'Suppliers'        => 'Lieferanten',
-    'TaxCodes'         => 'Steuerkennzeichen',
-    'TaxCombinations'  => 'Steuerkombination',
     'List'             => 'Liste',
     'Create'           => 'Erstellen',
 ]];
