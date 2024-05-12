@@ -25,21 +25,21 @@ echo $this->data['nav']->render();
 <?php if ($this->data['suggestion']->status === OrderSuggestionStatus::DRAFT) : ?>
 <div class="row">
     <div class="col-xs-12 col-sm-7 col-md-5 col-lg-4">
-        <div class="portlet">
+        <section class="portlet">
             <div class="portlet-body">
                 <input type="hidden" name="id" form="suggestionList" value="<?= $this->data['suggestion']->id; ?>">
                 <input name="save" type="submit" form="suggestionList" value="<?= $this->getHtml('Save', '0', '0'); ?>">
                 <!--<input name="order" type="submit" form="suggestionList" formaction="<?= UriFactory::build('{/api}purchase/order/suggestion/bill?csrf={$CSRF}'); ?>" formmethod="put" value="<?= $this->getHtml('Order'); ?>">-->
                 <input name="delete" class="cancel" type="submit" form="suggestionList" formmethod="delete" value="<?= $this->getHtml('Delete', '0', '0'); ?>">
             </div>
-        </div>
+        </section>
     </div>
 </div>
 <?php endif; ?>
 
 <div class="row">
     <div class="col-xs-12">
-        <div class="portlet">
+        <section class="portlet">
             <div class="portlet-head"><?= $this->getHtml('Suggestions'); ?><i class="g-icon download btn end-xs">download</i></div>
             <div class=""><!-- @todo Re-implement slider once we figured out how to combine slider+sticky -->
             <table id="suggestionList" class="default sticky" data-tag="form"
@@ -144,7 +144,7 @@ echo $this->data['nav']->render();
                     <td><?= $total->getAmount(); ?>
             </table>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 

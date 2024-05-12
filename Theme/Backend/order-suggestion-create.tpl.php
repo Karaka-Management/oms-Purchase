@@ -28,7 +28,7 @@ echo $this->data['nav']->render();
 ?>
 <div class="row">
     <div class="col-xs-12 col-sm-6">
-        <div class="portlet">
+        <section class="portlet">
             <form id="orderSuggestionCreate" action="<?= UriFactory::build('{/api}purchase/order/suggestion'); ?>" method="put">
             <div class="portlet-body">
                 <!--
@@ -89,6 +89,6 @@ echo $this->data['nav']->render();
                 <input type="submit" value="<?= $this->getHtml('Analyze'); ?>">
             </div>
             </form>
-        </div>
+        </section>
     </div>
 </div>
