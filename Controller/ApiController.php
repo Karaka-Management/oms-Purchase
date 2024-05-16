@@ -76,7 +76,7 @@ final class ApiController extends Controller
                     . ' /purchase/order/suggestion/create'
                     . ($supplier === null ? '' : ' -supplier ' . \escapeshellarg($supplier))
                     . ($productGroup === null ? '' : ' -pgroup ' . \escapeshellarg((string) $productGroup))
-                    . ($showIrrelevant === null ? '' : ' -irrelevant ' . \escapeshellarg((string) $showIrrelevant))
+                    . (' -irrelevant ' . \escapeshellarg((string) $showIrrelevant))
                     . ' -user ' . ((int) $request->header->account),
                 true
             );
