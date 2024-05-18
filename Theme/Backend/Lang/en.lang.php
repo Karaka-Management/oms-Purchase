@@ -50,6 +50,5 @@ return ['Purchase' => [
     'ProductGroup'             => 'Product Group',
     'MinRange'                 => 'Min. Range',
     'OrderSuggestions'         => 'Order Suggestions',
-    'OrderSuggestion'          => 'Order Suggestion',
     'Suggestions'              => 'Suggestions',
 ]];

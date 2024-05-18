@@ -37,7 +37,7 @@ return ['Purchase' => [
     ':SuggestionStatus-1'      => 'Entwurf',
     ':SuggestionStatus-2'      => 'Gelöscht',
     ':SuggestionStatus-3'      => 'Bestellt',
-    ':OptimizationAlgorithm-0' => 'Artikel specifisch',
+    ':OptimizationAlgorithm-0' => 'Artikel spezifisch',
     ':OptimizationAlgorithm-1' => 'Verfügbarkeit',
     ':OptimizationAlgorithm-2' => 'Kosten',
     ':OptimizationAlgorithm-3' => 'Just in time',
@@ -50,6 +50,5 @@ return ['Purchase' => [
     'SalesGroup'               => 'Umsatzgruppe',
     'ProductGroup'             => 'Produktgruppe',
     'OrderSuggestions'         => 'Bestellvorschläge',
-    'OrderSuggestion'          => 'Bestellvorschlag',
     'Suggestions'              => 'Vorschläge',
 ]];
