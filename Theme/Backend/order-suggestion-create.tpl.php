@@ -29,7 +29,7 @@ echo $this->data['nav']->render();
 <div class="row">
     <div class="col-xs-12 col-sm-6">
         <section class="portlet">
-            <form id="orderSuggestionCreate" action="<?= UriFactory::build('{/api}purchase/order/suggestion'); ?>" method="put">
+            <form id="orderSuggestionCreate" action="<?= UriFactory::build('{/api}purchase/order/suggestion?csrf={$CSRF}'); ?>" method="put">
             <div class="portlet-body">
                 <!--
                 <div class="form-group">
